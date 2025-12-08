@@ -3,6 +3,9 @@
 #include "Varitas.h"
 #include "Ticket.h"
 #include <fstream>
+#include <iostream>
+using namespace std;
+#include <limits>
 
 class ArchivoProductos {
 private:
@@ -34,11 +37,13 @@ void ArchivoProductos::agregarProducto() {
         Varitas v; v.setCodigo(code);
 
         char nombre[30];
-        cout << "Nombre: "; cin.ignore(); cin.getline(nombre,30); v.setNombre(nombre);
+        cout << "Nombre: "; cin.ignore(numeric_limits<streamsize>::max(), '\n'); cin.getline(nombre,30); v.setNombre(nombre);
 
         float precio; cout << "Precio: "; cin >> precio; v.setPrecio(precio);
 
         int existencia; cout << "Existencia: "; cin >> existencia; v.setExistencia(existencia);
+        char categoria[30];
+        cout << "Categoria: "; cin.ignore(numeric_limits<streamsize>::max(), '\n'); cin.getline(categoria,30); v.setCategoria(categoria);
 
         archivo.write(reinterpret_cast<char*>(&v), sizeof(Varitas));
         cout << "\nProducto agregado.\n";

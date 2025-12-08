@@ -1,6 +1,6 @@
 #ifndef VARITAS_H
 #define VARITAS_H
-
+#include <limits>
 #include <iostream>
 #include <cstring>
 using namespace std;
@@ -11,10 +11,11 @@ private:
     char nombre[30];
     float precio;
     int existencia;
+    char categoria[30];
 
 public:
     Varitas();
-    Varitas(int, const char[], float, int);
+    Varitas(int, const char[], float, int, const char[]);
     Varitas(const Varitas&);
     void operator=(const Varitas&);
 
@@ -36,20 +37,25 @@ public:
 
     friend istream& operator>>(istream&, Varitas&);
     friend ostream& operator<<(ostream&, const Varitas&);
+
+    void setCategoria(const char cat[]){ strcpy(categoria, cat); }
+    char* getCategoria(){ return categoria; }
 };
 
 inline Varitas::Varitas() {
     codigo = 0;
-    nombre[0] = '\0';
+    strcpy(nombre, "");
     precio = 0.0;
     existencia = 0;
+    strcpy(categoria, "");
 }
 
-inline Varitas::Varitas(int c, const char n[], float p, int e) {
+inline Varitas::Varitas(int c, const char n[], float p, int e, const char cat[]) {
     codigo = c;
     strcpy(nombre, n);
     precio = p;
     existencia = e;
+    strcpy(categoria, cat);
 }
 
 inline Varitas::Varitas(const Varitas& v) {
@@ -57,6 +63,7 @@ inline Varitas::Varitas(const Varitas& v) {
     strcpy(nombre, v.nombre);
     precio = v.precio;
     existencia = v.existencia;
+    strcpy(categoria, v.categoria);
 }
 
 inline void Varitas::operator=(const Varitas& v) {
@@ -65,6 +72,7 @@ inline void Varitas::operator=(const Varitas& v) {
         strcpy(nombre, v.nombre);
         precio = v.precio;
         existencia = v.existencia;
+        strcpy(categoria, v.categoria);
     }
 }
 
@@ -73,6 +81,7 @@ inline void Varitas::setCodigo(int c) { codigo = c; }
 inline void Varitas::setNombre(const char n[]) { strcpy(nombre, n); }
 inline void Varitas::setPrecio(float p) { precio = p; }
 inline void Varitas::setExistencia(int e) { existencia = e; }
+
 
 // Getters
 inline int Varitas::getCodigo() const { return codigo; }
@@ -101,12 +110,15 @@ inline istream& operator>>(istream& in, Varitas& v) {
     cout << "Codigo: ";
     in >> v.codigo;
     cout << "Nombre: ";
-    in.ignore();
+    in.ignore(numeric_limits<streamsize>::max(), '\n');
     in.getline(v.nombre, 30);
     cout << "Precio: ";
     in >> v.precio;
     cout << "Existencia: ";
     in >> v.existencia;
+    cout << "Categoria: ";
+    in.ignore(numeric_limits<streamsize>::max(), '\n');
+    in.getline(v.categoria, 30);
     return in;
 }
 
@@ -115,7 +127,7 @@ inline ostream& operator<<(ostream& out, const Varitas& v) {
     out << "Codigo: " << v.codigo
         << " | Nombre: " << v.nombre
         << " | Precio: $" << v.precio
-        << " | Existencia: " << v.existencia;
+        << " | Existencia: " << v.existencia<< " | Categoria: " << v.categoria;
     return out;
 }
 
