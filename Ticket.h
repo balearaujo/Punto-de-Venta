@@ -39,11 +39,11 @@ Ticket::Ticket() {
 }
 
 Ticket::Ticket(int c, const char n[],int cant, float pUnit){
- codigo = c;
- strcpy(nombre,n);
- cantidad = cant;
- precioUnit=pUnit;
- subtotal =cant* pUnit;
+    codigo = c;
+    strcpy(nombre,n);
+    cantidad = cant;
+    precioUnit=pUnit;
+    subtotal =cant* pUnit;
 }
 
 int Ticket::getCodigo()const { return codigo; }
