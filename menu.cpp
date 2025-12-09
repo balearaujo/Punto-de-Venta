@@ -2,7 +2,10 @@
 #include "ArchivoProductos.h"
 #include "Ticket.h"
 #include "Varitas.h"
+#include "Cliente.h"
 using namespace std;
+
+//Debemos cambiar el menu, solo querua probar las funciones nuevas
 
 int main() {
     ArchivoProductos archivo;
@@ -16,7 +19,11 @@ int main() {
         cout<<"4. Modificar producto"<<endl;
         cout<<"5. Eliminar producto"<<endl;
         cout<<"6. Registrar venta"<<endl;
-        cout<<"7. Salir"<<endl;
+        cout<<"7. Añadir Cliente"<<endl;
+        cout<<"8. Mostrar Clientes"<<endl;
+        cout<<"9. Buscar Cliente"<<endl;
+        cout<<"10. Modificar Cliente"<<endl;
+        cout<<"11. Salir"<<endl;
         cout<<"Selecciona una opcion: "; 
         cin >> opcion;
 
@@ -43,8 +50,29 @@ int main() {
                 } while(continuar=='s' || continuar=='S');
                 cout << "\n TOTAL DE LA VENTA \n" << total << "\n\n";
             } break;
-            case 7: cout << "\nSaliendo del programa...\n";
+            case 11: cout << "\nSaliendo del programa...\n";
                 break;
+            
+            case 7: {
+                ArchivoClientes archivoClientes;
+                archivoClientes.agregarCliente();
+            } break;
+            case 8: {
+                ArchivoClientes archivoClientes;
+                archivoClientes.mostrarClientes();
+            } break;
+            case 9: {
+                ArchivoClientes archivoClientes;
+                int id; cout << "ID del cliente: "; cin >> id;
+                archivoClientes.buscarCliente(id);
+            } break;
+
+            case 10: {
+                ArchivoClientes archivoClientes;
+                int id; cout << "ID del cliente a modificar: "; cin >> id;
+                archivoClientes.modificarCliente(id);
+            } break;
+
             default: cout << "Opcion invalida.\n";
         }
 
