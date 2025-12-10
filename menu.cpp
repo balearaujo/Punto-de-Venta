@@ -4,13 +4,17 @@
 #include "Varitas.h"
 #include "Venta.h"
 #include "Cliente.h"
+#include "Proveedor.h"
 using namespace std;
 
 //Debemos cambiar el menu, solo querua probar las funciones nuevas
 
 int main() {
     ArchivoProductos archivo;
+    ArchivoProveedores ArchivoProv;
     archivo.CrearArchivo();
+    ArchivoProv.crearArchivo();
+
     int opcion;
     do {
         cout<<"\n---- MENU PRINCIPAL ----\n";
@@ -25,7 +29,9 @@ int main() {
         cout<<"9. Buscar Cliente"<<endl;
         cout<<"10. Modificar Cliente"<<endl;
         cout<<"11. Salir"<<endl;
-        cout<<"Selecciona una opcion: "; 
+        cout<<"12. Lista de proveedores "<<endl;
+        cout<<"13. Agregar proveedor"<<endl;
+        cout<<"Selecciona una opcion: "<<endl; 
         cin >> opcion;
 
         switch(opcion) {
@@ -93,6 +99,16 @@ int main() {
                 int id; cout << "ID del cliente a modificar: "; cin >> id;
                 archivoClientes.modificarCliente(id);
             } break;
+
+            case 12:{
+                ArchivoProv.mostrarProveedores();
+                break;
+            }
+
+            case 13:{
+                ArchivoProv.agregarProveedor();
+                break;
+            }
 
             default: cout << "Opcion invalida.\n";
         }

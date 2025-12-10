@@ -47,6 +47,8 @@ void ArchivoProductos::agregarProducto() {
         char categoria[30];
         cout << "Categoria: "; cin.ignore(numeric_limits<streamsize>::max(), '\n'); cin.getline(categoria,30); v.setCategoria(categoria);
 
+        int idNombre; cout<<"id del Proveedor: "; cin>> idNombre; v.setIdProveedor(idNombre);
+
         archivo.write(reinterpret_cast<char*>(&v), sizeof(Varitas));
         cout << "\nProducto agregado.\n";
         cout << "\nNuevo codigo (-1 para terminar): "; cin >> code;
