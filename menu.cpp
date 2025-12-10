@@ -2,6 +2,7 @@
 #include "ArchivoProductos.h"
 #include "Ticket.h"
 #include "Varitas.h"
+#include "Venta.h"
 #include "Cliente.h"
 using namespace std;
 
@@ -39,16 +40,36 @@ int main() {
             case 5: { int c; cout << "Codigo del producto: "; cin >> c; archivo.eliminarProducto(c);}
                 break;
             case 6: {
-                int codigo, cantidad; char continuar;
-                Ticket total;
+                int codigo, cantidad;
+                char continuar;
+                Ticket total; // acumula subtotales
+
                 do {
-                    cout << "Codigo del producto: "; cin >> codigo;
-                    cout << "Cantidad a vender: "; cin >> cantidad;
+                    cout << "Codigo del producto: ";
+                    cin >> codigo;
+                    cout << "Cantidad a vender: ";
+                    cin >> cantidad;
+
                     Ticket venta = archivo.registrarVenta(codigo, cantidad);
-                    if(venta.getSubtotal()>0) total = total + venta;
-                    cout << "¿Vender otro producto? (s/n): "; cin >> continuar;
-                } while(continuar=='s' || continuar=='S');
-                cout << "\n TOTAL DE LA VENTA \n" << total << "\n\n";
+
+                    if (venta.getSubtotal() > 0)
+                        total = total + venta;
+
+                    cout << "¿Vender otro producto? (s/n): ";
+                    cin >> continuar;
+
+                } while (continuar == 's' || continuar == 'S');
+
+                // Aquí ya tienes el total acumulado
+                cout << "\nTOTAL DE LA VENTA (SUBTOTAL): $" << total.getSubtotal() << "\n";
+
+                // Crear ticket final
+                VentaFinal vf;
+                vf.generarFechaHora();
+                vf.pedirMetodoPago();
+                vf.calcularTotales(total.getSubtotal());
+                vf.imprimirTicket();
+
             } break;
             case 11: cout << "\nSaliendo del programa...\n";
                 break;

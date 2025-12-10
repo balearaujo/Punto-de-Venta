@@ -13,6 +13,8 @@ private:
 public:
     void CrearArchivo();
     void agregarProducto();
+    void agregarProducto2(int, char nombre[30] , float, int);
+
     void mostrarProductos();
     bool buscarProducto(int codigo);
     void modificarProducto(int codigo);
@@ -84,21 +86,45 @@ bool ArchivoProductos::buscarProducto(int codigo) {
 
 void ArchivoProductos::modificarProducto(int codigo) {
     fstream archivo(nombreArchivo, ios::in | ios::out | ios::binary);
-    if(!archivo) { cout << "No se puede abrir el archivo.\n"; return; }
+    if (!archivo) {
+        cout << "No se puede abrir el archivo.\n";
+        return;
+    }
 
     Varitas v;
-    while(archivo.read(reinterpret_cast<char*>(&v), sizeof(Varitas))) {
-        if(v.getCodigo() == codigo) {
-            cout << "Producto encontrado:\n" << v << endl;
+    streampos pos;
+
+    while (true) {
+        pos = archivo.tellg();              
+
+        if (!archivo.read(reinterpret_cast<char*>(&v), sizeof(Varitas)))
+            break;                           // FIN DE ARCHIVO
+
+        if (v.getCodigo() == codigo) {
+            cout << "Producto encontrado:\n"<< v;          
 
             float nuevoPrecio;
-            cout << "Nuevo precio: "; cin >> nuevoPrecio; v.setPrecio(nuevoPrecio);
+            cin >> nuevoPrecio;
 
-            archivo.seekp(-sizeof(Varitas), ios::cur);
-            archivo.write(reinterpret_cast<char*>(&v), sizeof(Varitas));
-            cout << "Producto modificado.\n"; break;
+            cout <<"AHHHH\n";
+
+            v.setPrecio(nuevoPrecio);
+
+            cout << v.getPrecio()<<" ";
+
+            
+            archivo.seekp(pos); // 2) Regresas al inicio del registro
+
+            archivo.write((char*)&v, sizeof(Varitas)); // 3) Sobrescribes
+
+            cout << "Producto modificado.\n";
+
+            archivo.close();
+            return;
         }
     }
+
+    cout << "Producto no encontrado.\n";
     archivo.close();
 }
 
@@ -120,27 +146,43 @@ void ArchivoProductos::eliminarProducto(int codigo) {
 }
 
 Ticket ArchivoProductos::registrarVenta(int codigo, int cantidad) {
-    Ticket temp;
+    Ticket temp; // Ticket vacío por si falla
+
     fstream archivo(nombreArchivo, ios::in | ios::out | ios::binary);
-    if(!archivo) { cout << "No se puede abrir el archivo.\n"; return temp; }
+    if (!archivo) {
+        cout << "No se puede abrir el archivo.\n";
+        return temp;
+    }
 
     Varitas v;
-    while(archivo.read(reinterpret_cast<char*>(&v), sizeof(Varitas))) {
-        if(v.getCodigo() == codigo) {
-            if(cantidad > v.getExistencia()) {
-                cout << "No hay suficiente existencia.\n"; return temp;
+    long posicion;
+
+    // Buscar producto
+    while (true) {
+        posicion = archivo.tellg(); // guardar posición ANTES de leer
+        if (!archivo.read(reinterpret_cast<char*>(&v), sizeof(Varitas)))
+            break;
+
+        if (v.getCodigo() == codigo) {
+
+            // Validar existencia
+            if (cantidad > v.getExistencia()) {
+                cout << "No hay suficiente existencia.\n";
+                return temp;
             }
 
+            // Crear ticket
+            float precio = v.getPrecio();
+            const char* nombre = v.getNombre();
+            Ticket t(codigo, nombre, cantidad, precio);
+            temp = t;
             v -= cantidad;
-            float subtotal = v.getPrecio() * cantidad;
-            Ticket t(codigo, cantidad, subtotal);
-            temp = t; 
-
-            archivo.seekp(-static_cast<int>(sizeof(Varitas)), ios::cur);
+            archivo.seekp(posicion, ios::beg);
             archivo.write(reinterpret_cast<char*>(&v), sizeof(Varitas));
-            archivo.flush(); // asegura que se escriba inmediatamente
+            archivo.flush();
 
             cout << "\nVenta registrada:\n" << t << endl;
+
             break;
         }
     }
@@ -148,5 +190,6 @@ Ticket ArchivoProductos::registrarVenta(int codigo, int cantidad) {
     archivo.close();
     return temp;
 }
+
 
 #endif
