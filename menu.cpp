@@ -7,11 +7,12 @@
 #include "Proveedor.h"
 using namespace std;
 
-//Debemos cambiar el menu, solo querua probar las funciones nuevas
 
 int main() {
     ArchivoProductos archivo;
     ArchivoProveedores ArchivoProv;
+    ArchivoClientes archivoClientes;
+
     archivo.CrearArchivo();
     ArchivoProv.crearArchivo();
 

@@ -4,27 +4,81 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <cstring>
 using namespace std;
 
-class VentaFinal {
+class DetalleVenta {
 private:
-    char fecha[20];
-    char hora[20];
-    char metodoPago[20];
+    int codigo;
+    char nombre[50];
+    int cantidad;
+    float precio;
+    float subtotal;
+   
+
+public:
+    DetalleVenta() {
+        codigo=0;
+        nombre[0]='\0';
+        cantidad=0;
+        precio=0;
+        subtotal = 0;
+    }
+
+    void setDatos(int c, const char n[],float p, int cant){
+        codigo=c;
+        strcpy(nombre,n);
+        precio=p;
+        cantidad=cant;
+        subtotal=precio * cantidad;
+    }
+
+    int getCodigo() const {return codigo; }
+    const char* getNombre() const {return nombre;}
+    int getCantidad() const {return cantidad; }
+    int getPrecio() const {return precio;}
+    float getSubtotal() const {return subtotal; }
+
+    void imprimir (){
+        cout<<codigo<< "|"
+            <<nombre<< "| Cantidad: "<<cantidad
+            <<"|$" <<precio<< "c/u | Subtotal: $" <<subtotal<<"\n";
+    }
+};
+
+
+class Venta {
+private:
+    int folio;
+    static int ultimoFolio;
+    char fecha[25];
+    char hora[25];
+
+    DetalleVenta detalles[50];
+    int numDetalles;
+
     float subtotal;
     float iva;
     float total;
 
 public:
-    VentaFinal() {
-        strcpy(fecha, ""); 
-        strcpy(hora, "");
-        strcpy(metodoPago, "");
-        subtotal = iva = total = 0;
+    Venta(){
+        folio=0;
+        numDetalles=0;
+        subtotal= iva= total=0;
+        fecha[0]= hora[0]='\0';
     }
 
-    void generarFechaHora() {
+    
+    const char* getFecha() const {return fecha;}
+    const char* getHora()const{return hora;}
+    DetalleVenta* getDetalles() {return detalles;}
 
+    void generarFolio(){ folio=++ultimoFolio;}
+    int getFolio()const{ return folio;}
+    void setFolio(int f) { folio=f;}
+
+    void generarFechaHora() {
         time_t now = time(0);
         tm *t = localtime(&now);
 
@@ -53,16 +107,25 @@ public:
         hora[8] = '\0';
     }
 
-    void calcularTotales(float sub) {
-        subtotal = sub;
+    bool agregarDetalle (int cod, const char nom[], float precio, int cant){
+        if(numDetalles >=50){ return false;}
+        if(cant<=0){ return false;}
+
+        detalles[numDetalles].setDatos(cod, nom, precio, cant);
+        numDetalles++;
+        return true;
+    }
+    
+    void calcularTotales() {
+        subtotal = 0;
+        for(int i=0;  i<numDetalles; i++)
+            subtotal += detalles[i].getSubtotal();
         iva = subtotal * 0.16;
         total = subtotal + iva;
     }
-
-    void pedirMetodoPago() {
-        cout << "Metodo de pago (EFECTIVO/TARJETA): ";
-        cin >> metodoPago;
-    }
+    float getTotal() const { return total; }
+    float getSubtotal() const { return subtotal; }
+    int getNumDetalles() const { return numDetalles; } 
 
     void imprimirTicket() {
         cout << "\n=====================================\n";
@@ -70,16 +133,25 @@ public:
         cout << "=====================================\n";
         cout << "Fecha: " << fecha << "\n";
         cout << "Hora:  " << hora << "\n";
-        cout << "Metodo de pago: " << metodoPago << "\n";
+        for (int i=0; i<numDetalles; i++)
+        detalles[i].imprimir();
         cout << "-------------------------------------\n";
         cout << "Subtotal: $" << subtotal << "\n";
         cout << "IVA (16%): $" << iva << "\n";
         cout << "TOTAL A PAGAR: $" << total << "\n";
         cout << "-------------------------------------\n";
-        cout << "Gracias por su compra :3\n";
+        cout << "Gracias por su compra :) \n";
         cout << "=====================================\n\n";
     }
 
+    void guardarEnArchivo(ofstream &out) {
+        out.write((char*)this,sizeof(*this));
+    }
+
+    void leerDeArchivo(ifstream&in){
+        in.read((char*)this, sizeof(*this));
+    }
 };
+int Venta::ultimoFolio=0;
 
 #endif

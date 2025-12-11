@@ -29,7 +29,7 @@ class Proveedor{
     }
 
     void setId(int i){id=i;}
-    void setNombre(char t[]){strcpy(telefono, t);}
+    void setNombre(char n[]){strcpy(nombre, n);}
     void setTelefono(char t[]){strcpy(telefono, t);}
 
     int getId() {return id;}

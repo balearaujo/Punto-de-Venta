@@ -10,27 +10,30 @@ private:
     int codigo;
     char nombre[50];
     int cantidad;
-    float precioUnit; //bro wtf
+    float precioUnit; 
     float subtotal;
 
+    
 public:
     Ticket();
     Ticket(int, const char[],int, float);
 
-    int getCodigo() const;
-    int getCantidad() const;
-    float getSubtotal() const;
+    inline int getCodigo() const;
+    inline int getCantidad() const;
+    inline float getPrecioUnit() const;
+    inline float getSubtotal() const;
 
-    void setCodigo(int);
-    void setCantidad(int);
-    void setSubtotal(float);
+    inline void setCodigo(int);
+    inline void setCantidad(int);
+    inline void setPrecioUnit(float);
+    inline void setSubtotal(float);
 
     Ticket operator+(const Ticket&) const;
 
     friend ostream& operator<<(ostream&, const Ticket&);
 };
 
-Ticket::Ticket() {
+inline Ticket::Ticket() {
     codigo = 0;
     strcpy(nombre, "");
     cantidad = 0;
@@ -38,7 +41,7 @@ Ticket::Ticket() {
     subtotal = 0.0;
 }
 
-Ticket::Ticket(int c, const char n[],int cant, float pUnit){
+inline Ticket::Ticket(int c, const char n[],int cant, float pUnit){
     codigo = c;
     strcpy(nombre,n);
     cantidad = cant;
@@ -46,13 +49,15 @@ Ticket::Ticket(int c, const char n[],int cant, float pUnit){
     subtotal =cant* pUnit;
 }
 
-int Ticket::getCodigo()const { return codigo; }
-int Ticket::getCantidad()const {return cantidad; }
-float Ticket::getSubtotal()const { return subtotal; }
+inline int Ticket::getCodigo()const { return codigo; }
+inline int Ticket::getCantidad()const {return cantidad; }
+inline float Ticket::getPrecioUnit() const { return precioUnit; }
+inline float Ticket::getSubtotal()const { return subtotal; }
 
-void Ticket::setCodigo(int c) {codigo = c; }
-void Ticket::setCantidad(int cant) {cantidad = cant;}
-void Ticket::setSubtotal(float sub) { subtotal = sub;}
+inline void Ticket::setCodigo(int c) {codigo = c; }
+inline void Ticket::setCantidad(int cant) {cantidad = cant;}
+inline void Ticket::setPrecioUnit(float pUnit) { precioUnit = pUnit; }
+inline void Ticket::setSubtotal(float sub) { subtotal = sub;}
 
 Ticket Ticket::operator+(const Ticket& t) const {
     Ticket temp;

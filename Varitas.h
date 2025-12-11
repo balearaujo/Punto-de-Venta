@@ -25,6 +25,7 @@ public:
     void setNombre(const char[]);
     void setPrecio(float);
     void setExistencia(int);
+    void setCategoria(const char[]);
     void setIdProveedor(int);
 
 
@@ -32,6 +33,7 @@ public:
     char* getNombre();
     float getPrecio() const;
     int getExistencia() const;
+    char* getCategoria();
     int getIdProveedor();
 
     // Sobrecarga de operadores
@@ -41,9 +43,6 @@ public:
 
     friend istream& operator>>(istream&, Varitas&);
     friend ostream& operator<<(ostream&, const Varitas&);
-
-    void setCategoria(const char cat[]){ strcpy(categoria, cat); }
-    char* getCategoria(){ return categoria; }
 
     void actualizarCantidad(int cant);
 };
@@ -73,6 +72,7 @@ inline Varitas::Varitas(const Varitas& v) {
     precio = v.precio;
     existencia = v.existencia;
     strcpy(categoria, v.categoria);
+    idProveedor=v.idProveedor;
 }
 
 inline void Varitas::operator=(const Varitas& v) {
@@ -82,6 +82,7 @@ inline void Varitas::operator=(const Varitas& v) {
         precio = v.precio;
         existencia = v.existencia;
         strcpy(categoria, v.categoria);
+        idProveedor=v.idProveedor;
     }
 }
 
@@ -90,7 +91,8 @@ inline void Varitas::setCodigo(int c) { codigo = c; }
 inline void Varitas::setNombre(const char n[]) { strcpy(nombre, n); }
 inline void Varitas::setPrecio(float p) { precio = p; }
 inline void Varitas::setExistencia(int e) { existencia = e; }
-void Varitas::setIdProveedor(int i){
+inline void Varitas::setCategoria(const char cat[]){strcpy(categoria,cat); }
+inline void Varitas::setIdProveedor(int i){
     idProveedor=i;
 }
 
@@ -99,6 +101,7 @@ inline int Varitas::getCodigo() const { return codigo; }
 inline char* Varitas::getNombre() { return nombre; }
 inline float Varitas::getPrecio() const { return precio; }
 inline int Varitas::getExistencia() const { return existencia; }
+inline char* Varitas::getCategoria(){ return categoria;}
 int Varitas::getIdProveedor(){
     return idProveedor;
 }
@@ -143,7 +146,9 @@ inline ostream& operator<<(ostream& out, const Varitas& v) {
     out << "Codigo: " << v.codigo
         << " | Nombre: " << v.nombre
         << " | Precio: $" << v.precio
-        << " | Existencia: " << v.existencia<< " | Categoria: " << v.categoria<<" |Proveedor: "<<v.idProveedor;
+        << " | Existencia: " << v.existencia
+        << " | Categoria: " << v.categoria
+        << " |Proveedor: "<<v.idProveedor;
     return out;
 }
 
@@ -151,7 +156,7 @@ void Varitas::actualizarCantidad(int cant){
     if (cant <= existencia){
         existencia-=cant;
     } else{
-        cout<<"No hay suficiete inventario\n";
+        cout<<"No hay suficiente inventario\n";
     }
 }
 
