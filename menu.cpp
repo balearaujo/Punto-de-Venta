@@ -25,6 +25,22 @@ int main() {
 
     Usuario* u = nullptr;
 
+    do {
+            
+        cout << "\n ====== Wasap ==== \n";
+        cout << "Agregar usuario (0) / iniciar secion (1)\n";
+
+        int tipo;
+        cin >> tipo;
+        if(tipo==0){
+            archivoUsuarios.agregarUsuario();
+            cout << "Listo\n";
+            break;
+        } else if(tipo!=1){
+            cout << "Opción invalida\n";
+        } else break;
+    } while (true);
+
     cout << "\n======= INICIO DE SESION =======\n";
     do {
         u = archivoUsuarios.login();

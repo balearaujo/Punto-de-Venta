@@ -14,7 +14,7 @@ public:
     void CrearArchivo();
     void agregarProducto();
     void mostrarProductos();
-    bool buscarProducto(int codigo);
+    bool buscarProducto(int codigo, bool print);
     bool obtenerProducto (int codigo, Varitas &p, long &posicion);
     void modificarProducto(int codigo);
     void eliminarProducto(int codigo);
@@ -36,7 +36,7 @@ void ArchivoProductos::agregarProducto() {
 
     while (code != -1) {
 
-        if (buscarProducto(code)) {
+        if (buscarProducto(code, false)) {
             cout << "ERROR: Ya existe un producto con ese código.\n";
             cout << "Ingresa otro código (-1 para terminar): ";
             cin >> code;
@@ -99,7 +99,7 @@ void ArchivoProductos::mostrarProductos() {
     archivo.close();
 }
 
-bool ArchivoProductos::buscarProducto(int codigo) {
+bool ArchivoProductos::buscarProducto(int codigo, bool print=true) {
     ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo) { cout << "No se pudo abrir el archivo.\n"; return false; }
 
@@ -107,11 +107,11 @@ bool ArchivoProductos::buscarProducto(int codigo) {
     bool encontrado = false;
     while(archivo.read(reinterpret_cast<char*>(&v), sizeof(Varitas))) {
         if(v.getCodigo() == codigo) {
-            cout << "\n=== PRODUCTO ENCONTRADO ===\n" << v << endl;
+            if(print) cout << "\n=== PRODUCTO ENCONTRADO ===\n" << v << endl;
             encontrado = true; break;
         }
     }
-    if(!encontrado) cout << "\nProducto con codigo " << codigo << " no encontrado.\n";
+    if(!encontrado && print) cout << "\nProducto con codigo " << codigo << " no encontrado.\n";
     archivo.close();
     return encontrado;
 }
