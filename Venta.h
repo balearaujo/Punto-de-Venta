@@ -38,6 +38,7 @@ public:
     int getPrecio() const {return precio;}
     float getSubtotal() const {return subtotal; }
     
+    
     void imprimir (){
         cout<<codigo<< "|"
             <<nombre<< "| Cantidad: "<<cantidad
@@ -49,6 +50,8 @@ public:
 class Venta {
 private:
     int folio;
+    int id_cliente;
+
     static int ultimoFolio;
     char fecha[25];
     char hora[25];
@@ -78,6 +81,7 @@ public:
 
     void generarFolio(){ folio=++ultimoFolio;}
     int getFolio()const{ return folio;}
+    int getCliente()const {return id_cliente;}
     void setFolio(int f) { folio=f;}
     void setMetodoPago(const char mp[]){strcpy(metodoPago, mp);};
 
@@ -110,12 +114,13 @@ public:
         hora[8] = '\0';
     }
 
-    bool agregarDetalle (int cod, const char nom[], float precio, int cant){
+    bool agregarDetalle (int cod, const char nom[], float precio, int cant, int id_client){
         if(numDetalles >=50){ return false;}
         if(cant<=0){ return false;}
 
         detalles[numDetalles].setDatos(cod, nom, precio, cant);
         numDetalles++;
+        id_cliente = id_client;
         return true;
     }
     
@@ -129,6 +134,12 @@ public:
     float getTotal() const { return total; }
     float getSubtotal() const { return subtotal; }
     int getNumDetalles() const { return numDetalles; } 
+    int getCantidadTotalProductos()const{
+        int totalCant=0;
+        for (int i=0; i<numDetalles; i++)
+            totalCant += detalles[i].getCantidad();
+        return totalCant;
+    }
 
     void imprimirTicket() {
         cout << "\n=====================================\n";

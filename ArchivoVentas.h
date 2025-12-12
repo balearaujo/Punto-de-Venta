@@ -15,14 +15,16 @@ private:
 
 public:
     void CrearArchivo();
-    bool registrarVenta(ArchivoProductos &ap);
+    bool registrarVenta(ArchivoProductos &ap,int id_cliente);
     void mostrarVentas();
+    void mostrarVentasCliente(int id_cliente);
     bool buscarVenta(int folio);
 
     void reportePorDia(const char* dia);
     void reportePorProducto(int codigo);
     void reporteTotales();
     bool consultarPorFecha(const char* fechaBuscada);
+
 };
 
 
@@ -32,7 +34,7 @@ void ArchivoVentas::CrearArchivo() {
     archivo.close();
 }
 
-bool ArchivoVentas::registrarVenta(ArchivoProductos &ap){
+bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
     Venta venta;           
     venta.generarFolio();
     venta.generarFechaHora();
@@ -65,7 +67,7 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap){
             return false;
         }
 
-        venta.agregarDetalle(p.getCodigo(),p.getNombre(),p.getPrecio(),cantidad);
+        venta.agregarDetalle(p.getCodigo(),p.getNombre(),p.getPrecio(),cantidad,id_cliente);
         
         p.setExistencia(p.getExistencia()-cantidad);
         
@@ -125,6 +127,31 @@ void ArchivoVentas::mostrarVentas() {
     }
 }
 
+
+void ArchivoVentas::mostrarVentasCliente(int id_cliente) {
+    ifstream archivo(nombreArchivo, ios::binary);
+    if (!archivo) {
+        cout << "No se pudo abrir ventas.dat\n";
+        return;
+    }
+
+    Venta venta;
+    bool compro = false;
+    int total=0;
+
+    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) {
+        if(venta.getCliente()!=id_cliente)continue;
+        compro = true;
+        total += venta.getTotal();
+        venta.imprimirTicket();
+    }
+    if(compro == false){
+        cout << "El cliente no ha registrado ninguna venta\n";
+    } else {
+        cout << "El total es: " << total <<"\n";
+    }
+}
+
 bool ArchivoVentas::buscarVenta(int folio) {
     ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo) return false;
@@ -152,6 +179,8 @@ void ArchivoVentas::reportePorDia(const char* dia) {
 
     Venta venta;
     float totalDia = 0;
+    int cantidadProductos=0;
+    bool hayVentas=false;
 
     cout << "\n=== REPORTE DE VENTAS DEL DIA " << dia << " ===\n";
 
@@ -159,12 +188,18 @@ void ArchivoVentas::reportePorDia(const char* dia) {
         if (strcmp(venta.getFecha(), dia) == 0) {
             venta.imprimirTicket();
             totalDia += venta.getTotal();
+            cantidadProductos += venta.getCantidadTotalProductos();
+            hayVentas=true;
         }
     }
 
-    cout << "\nTOTAL VENDIDO EN EL DIA: $" << totalDia << "\n";
-
-    archivo.close();
+    if(!hayVentas)
+        cout<<"No se encontraron ventas para la fecha"<<dia<<"\n";
+    else{
+        cout << "\nTOTAL VENDIDO EN EL DIA: $" << totalDia << "\n";
+        cout<<"TOTAL DE PRODUCTOS VENDIDOS EN EL DIA:"<<cantidadProductos<<"\n";
+    }
+        archivo.close();
 }
 
 void ArchivoVentas::reportePorProducto(int codigo) {

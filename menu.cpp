@@ -83,6 +83,7 @@ int main() {
             cout<<"18. Consulta por IdProveedor\n";
             cout<<"19. Consulta por categoria\n";
             cout<<"20. Consulta producto vendido por Fecha\n";
+            cout << "21. Consulta por cliente\n";
         }
 
         cout << "0. Salir\n";
@@ -97,13 +98,18 @@ int main() {
                 char continuar;
                 Ticket total;
 
-                do {
-                    cout << "Codigo del producto: ";
-                    cin >> codigo;
-                    cout << "Cantidad a vender: ";
-                    cin >> cantidad;
+                int id_cliente;
 
-                    ArchVentas.registrarVenta(archivo);
+                cout << "ID del cliente:\n";
+                cin >> id_cliente;
+
+                if(archivoClientes.buscarCliente(id_cliente)!=1){
+                    cout << "No fue posible continuar el proceso por falta de un cliente\n";
+                    break;
+                }
+
+                do {
+                    ArchVentas.registrarVenta(archivo,id_cliente);
 
                     cout << "¿Vender otro producto? (s/n): ";
                     cin >> continuar;
@@ -225,7 +231,10 @@ int main() {
                 if (!esAdmin){
                     cout<<"Acceso denegado.\n"; break;
                 }
-                //ArchVentas.reportePorDia();
+                char fecha[20];
+                cout <<"Ingresa la fecha a consultar (DD/MM/AA): ";
+                cin >> fecha;
+                ArchVentas.reportePorDia(fecha);
                 break;
 
             case 18:
@@ -250,6 +259,22 @@ int main() {
                 }
                 char Fech[20]; cout<<"Ingresa la fecha a buscar DD/MM/AAAA: "; cin>>Fech;
                 ArchivoVentas().consultarPorFecha(Fech);
+                break;
+            
+            case 21:
+                //Hacer cosas de admin y eso
+
+                int id_cliente;
+                cout << "ID del cliente:\n";
+                cin >> id_cliente;
+
+                if(archivoClientes.buscarCliente(id_cliente)!=1){
+                    cout << "No fue posible continuar el proceso por falta de un cliente\n";
+                    break;
+                }
+
+                ArchivoVentas().mostrarVentasCliente(id_cliente);
+
                 break;
             case 0:
                 cout << "\nCerrando sesión... \n";
