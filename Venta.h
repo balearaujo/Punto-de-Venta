@@ -14,7 +14,6 @@ private:
     int cantidad;
     float precio;
     float subtotal;
-   
 
 public:
     DetalleVenta() {
@@ -38,7 +37,7 @@ public:
     int getCantidad() const {return cantidad; }
     int getPrecio() const {return precio;}
     float getSubtotal() const {return subtotal; }
-
+    
     void imprimir (){
         cout<<codigo<< "|"
             <<nombre<< "| Cantidad: "<<cantidad
@@ -60,6 +59,7 @@ private:
     float subtotal;
     float iva;
     float total;
+    char metodoPago[20];
 
 public:
     Venta(){
@@ -67,16 +67,19 @@ public:
         numDetalles=0;
         subtotal= iva= total=0;
         fecha[0]= hora[0]='\0';
+        metodoPago[0]='\0';
     }
 
     
     const char* getFecha() const {return fecha;}
     const char* getHora()const{return hora;}
     DetalleVenta* getDetalles() {return detalles;}
+    const char* getMetodoPago() const {return metodoPago;}
 
     void generarFolio(){ folio=++ultimoFolio;}
     int getFolio()const{ return folio;}
     void setFolio(int f) { folio=f;}
+    void setMetodoPago(const char mp[]){strcpy(metodoPago, mp);};
 
     void generarFechaHora() {
         time_t now = time(0);
@@ -136,6 +139,7 @@ public:
         for (int i=0; i<numDetalles; i++)
         detalles[i].imprimir();
         cout << "-------------------------------------\n";
+        cout<<"Metodo de pago: "<<metodoPago<<"\n";
         cout << "Subtotal: $" << subtotal << "\n";
         cout << "IVA (16%): $" << iva << "\n";
         cout << "TOTAL A PAGAR: $" << total << "\n";

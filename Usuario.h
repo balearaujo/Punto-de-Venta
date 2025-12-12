@@ -54,5 +54,20 @@ public:
     }
 };
 
+class Administrador:public Usuario{
+    public: 
+    Administrador(const Usuario& u){
+        setDatos(u.getId(), u.getNombre(), u.getUsuario(), u.getContrasenia(), 1);
+    }
+};
+
+class Cajero:public Usuario{
+    public: 
+    Cajero(const Usuario& u){
+        setDatos(u.getId(), u.getNombre(), u.getUsuario(), u.getContrasenia(), 2);
+    }
+};
+
+
 
 #endif

@@ -34,7 +34,7 @@ public:
         cout << "Usuario: admin | Contrasenia: admin123\n";
     }
 
-     Usuario* login() {
+    Usuario* login() {
         static Usuario u;
         ifstream archivo(nombreArchivo, ios::binary);
 

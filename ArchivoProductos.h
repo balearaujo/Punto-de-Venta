@@ -12,7 +12,6 @@ private:
     const char* nombreArchivo = "productos.dat";
 public:
     void CrearArchivo();
-
     void agregarProducto();
     void mostrarProductos();
     bool buscarProducto(int codigo);
@@ -150,8 +149,7 @@ void ArchivoProductos::modificarProducto(int codigo) {
     Varitas v;
     
     while (archivo.read(reinterpret_cast<char*>(&v),sizeof(Varitas))) {
-        std::streampos afterRead=archivo.tellg();
-        long pos = archivo.tellg()-static_cast<long>(sizeof(Varitas));              
+        long pos = static_cast<long>(archivo.tellg()) - static_cast<long>(sizeof(Varitas));              
 
     
         if (v.getCodigo() == codigo) {

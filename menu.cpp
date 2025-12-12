@@ -5,51 +5,77 @@
 #include "Venta.h"
 #include "Cliente.h"
 #include "Proveedor.h"
+#include "ArchivoVentas.h"
+#include "ArchivoUsuario.h"
+#include "Usuario.h"
 using namespace std;
 
-
 int main() {
+
     ArchivoProductos archivo;
     ArchivoProveedores ArchivoProv;
     ArchivoClientes archivoClientes;
+    ArchivoVentas ArchVentas;
+    ArchivoUsuarios archivoUsuarios;
 
     archivo.CrearArchivo();
     ArchivoProv.crearArchivo();
+    ArchVentas.CrearArchivo();
+    archivoUsuarios.crearArchivo();
+
+    Usuario* u = nullptr;
+
+    cout << "\n======= INICIO DE SESION =======\n";
+    do {
+        u = archivoUsuarios.login();
+        if (u == nullptr) {
+            cout << "Usuario o contrasenia incorrectos. Intenta de nuevo.\n";
+        }
+    } while (u == nullptr);
+
+    bool esAdmin = (u->getTipo() == 1);
+
+    cout << "\nBienvenido, " << u->getNombre()
+        << " (" << (esAdmin ? "Administrador" : "Cajero") << ")\n";
+
+    // -------------------------------
+    //           MENU
+    // -------------------------------
 
     int opcion;
     do {
-        cout<<"\n---- MENU PRINCIPAL ----\n";
-        cout<<"1. Agregar producto"<<endl;
-        cout<<"2. Mostrar productos"<<endl;
-        cout<<"3. Buscar producto"<<endl;
-        cout<<"4. Modificar producto"<<endl;
-        cout<<"5. Eliminar producto"<<endl;
-        cout<<"6. Registrar venta"<<endl;
-        cout<<"7. Añadir Cliente"<<endl;
-        cout<<"8. Mostrar Clientes"<<endl;
-        cout<<"9. Buscar Cliente"<<endl;
-        cout<<"10. Modificar Cliente"<<endl;
-        cout<<"11. Salir"<<endl;
-        cout<<"12. Lista de proveedores "<<endl;
-        cout<<"13. Agregar proveedor"<<endl;
-        cout<<"Selecciona una opcion: "<<endl; 
+        cout << "\n------ MENU PRINCIPAL ------\n";
+        cout << "1. Registrar venta\n";
+        cout << "2. Mostrar productos\n";
+        cout << "3. Buscar producto\n";
+
+        if (esAdmin) {
+            cout << "4. Agregar producto\n";
+            cout << "5. Modificar producto\n";
+            cout << "6. Eliminar producto\n";
+            cout << "7. Añadir Cliente\n";
+            cout << "8. Mostrar Clientes\n";
+            cout << "9. Buscar Cliente\n";
+            cout << "10. Modificar Cliente\n";
+            cout << "11. Lista de proveedores\n";
+            cout << "12. Agregar proveedor\n";
+            cout << "13. Administrar usuarios (listar)\n";
+            cout<<"14. Agregar usuario\n";
+            cout<<"15. Mostrar ventas historicas\n";
+            cout<<"16. Reporte por producto\n";
+        }
+
+        cout << "0. Salir\n";
+        cout << "Selecciona una opcion: ";
         cin >> opcion;
 
-        switch(opcion) {
-            case 1: archivo.agregarProducto();
-                break;
-            case 2: archivo.mostrarProductos();
-                break;
-            case 3: { int c; cout << "Codigo del producto: "; cin >> c; archivo.buscarProducto(c);}
-                break;
-            case 4: { int c; cout << "Codigo del producto: "; cin >> c; archivo.modificarProducto(c);} 
-                break;
-            case 5: { int c; cout << "Codigo del producto: "; cin >> c; archivo.eliminarProducto(c);}
-                break;
-            case 6: {
+
+        switch (opcion) {
+
+            case 1: {
                 int codigo, cantidad;
                 char continuar;
-                Ticket total; // acumula subtotales
+                Ticket total;
 
                 do {
                     cout << "Codigo del producto: ";
@@ -57,64 +83,139 @@ int main() {
                     cout << "Cantidad a vender: ";
                     cin >> cantidad;
 
-                    Ticket venta = archivo.registrarVenta(codigo, cantidad);
-
-                    if (venta.getSubtotal() > 0)
-                        total = total + venta;
+                    ArchVentas.registrarVenta(archivo);
 
                     cout << "¿Vender otro producto? (s/n): ";
                     cin >> continuar;
 
                 } while (continuar == 's' || continuar == 'S');
 
-                // Aquí ya tienes el total acumulado
-                cout << "\nTOTAL DE LA VENTA (SUBTOTAL): $" << total.getSubtotal() << "\n";
-
-                // Crear ticket final
-                VentaFinal vf;
+                Venta vf;
                 vf.generarFechaHora();
-                vf.pedirMetodoPago();
-                vf.calcularTotales(total.getSubtotal());
+                vf.calcularTotales();
                 vf.imprimirTicket();
-
             } break;
-            case 11: cout << "\nSaliendo del programa...\n";
+
+            case 2:
+                archivo.mostrarProductos();
                 break;
-            
-            case 7: {
-                ArchivoClientes archivoClientes;
+
+            case 3: {
+                int c;
+                cout << "Codigo del producto: ";
+                cin >> c;
+                archivo.buscarProducto(c);
+            } break;
+
+            // ----------------- SOLO ADMIN -----------------
+
+            case 4:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
+                archivo.agregarProducto();
+                break;
+
+            case 5:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
+                {
+                    int c;
+                    cout << "Codigo del producto: ";
+                    cin >> c;
+                    archivo.modificarProducto(c);
+                }
+                break;
+
+            case 6:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
+                {
+                    int c;
+                    cout << "Codigo del producto: ";
+                    cin >> c;
+                    archivo.eliminarProducto(c);
+                }
+                break;
+
+            case 7:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
                 archivoClientes.agregarCliente();
-            } break;
-            case 8: {
-                ArchivoClientes archivoClientes;
+                break;
+
+            case 8:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
                 archivoClientes.mostrarClientes();
-            } break;
-            case 9: {
-                ArchivoClientes archivoClientes;
-                int id; cout << "ID del cliente: "; cin >> id;
-                archivoClientes.buscarCliente(id);
-            } break;
+                break;
 
-            case 10: {
-                ArchivoClientes archivoClientes;
-                int id; cout << "ID del cliente a modificar: "; cin >> id;
-                archivoClientes.modificarCliente(id);
-            } break;
+            case 9:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
+                {
+                    int id;
+                    cout << "ID del cliente: ";
+                    cin >> id;
+                    archivoClientes.buscarCliente(id);
+                }
+                break;
 
-            case 12:{
+            case 10:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
+                {
+                    int id;
+                    cout << "ID del cliente a modificar: ";
+                    cin >> id;
+                    archivoClientes.modificarCliente(id);
+                }
+                break;
+
+            case 11:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
                 ArchivoProv.mostrarProveedores();
                 break;
-            }
 
-            case 13:{
+            case 12:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
                 ArchivoProv.agregarProveedor();
                 break;
-            }
 
-            default: cout << "Opcion invalida.\n";
+            case 13:
+                if (!esAdmin) { cout << "Acceso denegado.\n"; break; }
+                archivoUsuarios.mostrarUsuarios();
+                break;
+            
+            case 14:
+                if (!esAdmin){
+                    cout<<"Acceso denegado.\n"; break;
+                }
+                archivoUsuarios.agregarUsuario();
+                break;
+
+            case 15:
+                if (!esAdmin){
+                    cout<<"Acceso denegado.\n"; break;
+                }
+                ArchVentas.reporteTotales();
+                break;
+                
+            case 16:
+                if (!esAdmin){
+                    cout<<"Acceso denegado.\n"; break;
+                }
+                cout<<"Producto a buscar:";
+                int idP; cin>>idP;
+                ArchVentas.reportePorProducto(idP);
+                break;
+            case 17:
+                if (!esAdmin){
+                    cout<<"Acceso denegado.\n"; break;
+                }
+                //ArchVentas.reportePorDia();
+                break;
+            case 0:
+                cout << "\nCerrando sesión... \n";
+                break;
+
+            default:
+                cout << "Opción inválida.\n";
         }
 
-    } while(opcion != 7);
+    } while (opcion != 0);
 
     return 0;
 }
