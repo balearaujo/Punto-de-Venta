@@ -79,6 +79,10 @@ int main() {
             cout<<"14. Agregar usuario\n";
             cout<<"15. Mostrar ventas historicas\n";
             cout<<"16. Reporte por producto\n";
+            cout<<"Aun no m sale el 17\n";
+            cout<<"18. Consulta por IdProveedor\n";
+            cout<<"19. Consulta por categoria\n";
+            cout<<"20. Consulta producto vendido por Fecha\n";
         }
 
         cout << "0. Salir\n";
@@ -222,6 +226,30 @@ int main() {
                     cout<<"Acceso denegado.\n"; break;
                 }
                 //ArchVentas.reportePorDia();
+                break;
+
+            case 18:
+                if (!esAdmin){
+                    cout<<"Acceso denegado.\n"; break;
+                }
+                int idProv; cout<<"Ingresa Id del Proveedor para buscar sus productos: "; cin>>idProv;
+                archivo.consulraporIdProv(idProv);
+                break;
+
+            case 19:
+                if (!esAdmin){
+                    cout<<"Acceso denegado.\n"; break;
+                }
+                char cat[20]; cout<<"Ingresa la categoria a buscar: "; cin>>cat;
+                archivo.consultaporCategoria(cat);
+                break;
+
+            case 20:
+                if (!esAdmin){
+                    cout<<"Acceso denegado.\n"; break;
+                }
+                char Fech[20]; cout<<"Ingresa la fecha a buscar DD/MM/AAAA: "; cin>>Fech;
+                ArchivoVentas().consultarPorFecha(Fech);
                 break;
             case 0:
                 cout << "\nCerrando sesión... \n";

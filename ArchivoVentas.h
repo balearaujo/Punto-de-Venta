@@ -22,6 +22,7 @@ public:
     void reportePorDia(const char* dia);
     void reportePorProducto(int codigo);
     void reporteTotales();
+    bool consultarPorFecha(const char* fechaBuscada);
 };
 
 
@@ -218,4 +219,33 @@ void ArchivoVentas::reporteTotales() {
     archivo.close();
 }
 
+bool ArchivoVentas::consultarPorFecha(const char* fechaBuscada) {
+    ifstream archivo(nombreArchivo, ios::binary);
+    if (!archivo) {
+        cout << "No se pudo abrir el archivo de ventas.\n";
+        return false;
+    }
+
+    Venta v;
+    bool encontrado = false;
+
+    while (archivo.read((char*)&v, sizeof(Venta))) {
+
+        if (strcmp(v.getFecha(), fechaBuscada) == 0) {
+
+            cout << "\n=== VENTA ENCONTRADA ===\n";
+            cout << "Folio: " << v.getFolio() << endl;
+            cout << "Total: $" << v.getTotal() << endl;
+            v.imprimirTicket();  
+
+            encontrado = true;
+        }
+    }
+
+    if (!encontrado)
+        cout << "\nNo hay ventas en la fecha " << fechaBuscada << endl;
+
+    archivo.close();
+    return encontrado;
+}
 #endif

@@ -1,6 +1,7 @@
 #ifndef ARCHIVOPRODUCTOS_H
 #define ARCHIVOPRODUCTOS_H
 #include "Varitas.h"
+#include "Venta.h"
 #include "Ticket.h"
 #include <fstream>
 #include <iostream>
@@ -18,6 +19,9 @@ public:
     bool obtenerProducto (int codigo, Varitas &p, long &posicion);
     void modificarProducto(int codigo);
     void eliminarProducto(int codigo);
+    bool consultaporCategoria(char * cat);
+    bool consulraporIdProv(int IdPr);
+    bool consultaporFecha(char* f);
     
 };
 
@@ -115,6 +119,45 @@ bool ArchivoProductos::buscarProducto(int codigo, bool print=true) {
     archivo.close();
     return encontrado;
 }
+
+bool ArchivoProductos::consultaporCategoria(char * cat){
+    ifstream archivo(nombreArchivo, ios::binary);
+    if (!archivo){
+        cout<<"No se pudo abrir el archivo\n"; return false;
+    }
+
+    Varitas v;
+    bool encontrado=false;
+    while(archivo.read(reinterpret_cast<char*>(&v), sizeof(Varitas))){
+        if(strcmp(v.getCategoria(), cat)==0){
+            cout<<"Producto de categoria encontrado"<<v<<endl;
+            encontrado=true;
+        }
+    }
+    if(!encontrado) cout << "\nProducto de categoria " << cat << " no encontrado.\n";
+    archivo.close();
+    return encontrado;
+}
+
+
+bool ArchivoProductos::consulraporIdProv(int IdPr) {
+    ifstream archivo(nombreArchivo, ios::binary);
+    if (!archivo) { cout << "No se pudo abrir el archivo.\n"; return false; }
+
+    Varitas v;
+    bool encontrado = false;
+    while(archivo.read(reinterpret_cast<char*>(&v), sizeof(Varitas))) {
+        if(v.getIdProveedor() == IdPr) {
+        cout << "\n=== PRODUCTO ENCONTRADO ===\n" << v << endl;
+            encontrado = true; break;
+        }
+    }
+    if(!encontrado) cout << "\nProducto de " << IdPr << " no encontrado.\n";
+    archivo.close();
+    return encontrado;
+}
+
+//falta implementar por usuario, tampoco supe como
 
 bool ArchivoProductos::obtenerProducto(int codigo, Varitas &p,long &posicion){
     ifstream archivo (nombreArchivo, ios::binary);
