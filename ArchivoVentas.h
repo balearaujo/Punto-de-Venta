@@ -6,6 +6,7 @@
 #include "Varitas.h"
 #include "Venta.h"
 #include "ArchivoProductos.h"
+#include "Gatos.h"
 using namespace std;
 
 
@@ -24,6 +25,8 @@ public:
     void reportePorProducto(int codigo);
     void reporteTotales();
     bool consultarPorFecha(const char* fechaBuscada);
+    void reportePorDiaTxt(const char *dia);
+    void corteDiario(const char* fecha);
 
 };
 
@@ -67,7 +70,7 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
             return false;
         }
 
-        venta.agregarDetalle(p.getCodigo(),p.getNombre(),p.getPrecio(),cantidad,id_cliente);
+        venta.agregarDetalle(p.getCodigo(),p.getNombre(),p.getPrecio(), p.getCosto(), cantidad, id_cliente);
         
         p.setExistencia(p.getExistencia()-cantidad);
         
@@ -178,7 +181,8 @@ void ArchivoVentas::reportePorDia(const char* dia) {
     }
 
     Venta venta;
-    float totalDia = 0;
+    float totalDia= 0;
+    float gananciaDia=0;
     int cantidadProductos=0;
     bool hayVentas=false;
 
@@ -188,6 +192,7 @@ void ArchivoVentas::reportePorDia(const char* dia) {
         if (strcmp(venta.getFecha(), dia) == 0) {
             venta.imprimirTicket();
             totalDia += venta.getTotal();
+            gananciaDia+=venta.getTotal();
             cantidadProductos += venta.getCantidadTotalProductos();
             hayVentas=true;
         }
@@ -197,10 +202,51 @@ void ArchivoVentas::reportePorDia(const char* dia) {
         cout<<"No se encontraron ventas para la fecha"<<dia<<"\n";
     else{
         cout << "\nTOTAL VENDIDO EN EL DIA: $" << totalDia << "\n";
+        cout<<gananciaDia<<gananciaDia<<totalDia<<endl;
         cout<<"TOTAL DE PRODUCTOS VENDIDOS EN EL DIA:"<<cantidadProductos<<"\n";
     }
         archivo.close();
 }
+
+void ArchivoVentas::reportePorDiaTxt(const char *dia){
+    ifstream archivo(nombreArchivo, ios::binary);
+    ofstream txt("reporte_dia.txt");
+
+    if(!archivo || !txt){
+        cout << "Error al abrir archivos\n";
+        return;
+    }
+
+    Venta venta;
+    float total = 0, ganancia = 0;
+    bool hay = false;
+
+    txt << "REPORTE DE VENTAS DEL DIA " << dia << "\n\n";
+
+    while(archivo.read((char*)&venta, sizeof(Venta))){
+        if(strcmp(venta.getFecha(), dia) == 0){
+            hay = true;
+            txt << "Folio: " << venta.getFolio()
+                << " Total: $" << venta.getTotal()
+                << " Ganancia: $" << venta.getGanancia() << "\n";
+            total += venta.getTotal();
+            ganancia += venta.getGanancia();
+        }
+    }
+
+    if(!hay)
+        txt << "No hubo ventas este dia\n";
+    else{
+        txt << "\nTOTAL VENDIDO: $" << total << endl;
+        txt << "GANANCIA TOTAL: $" << ganancia << endl;
+    }
+
+    archivo.close();
+    txt.close();
+
+    cout << "Reporte TXT generado correctamente.\n";
+}
+
 
 void ArchivoVentas::reportePorProducto(int codigo) {
     ifstream archivo(nombreArchivo, ios::binary);
@@ -282,5 +328,42 @@ bool ArchivoVentas::consultarPorFecha(const char* fechaBuscada) {
 
     archivo.close();
     return encontrado;
+}
+
+void ArchivoVentas::corteDiario(const char* fecha){
+    ifstream ventas(nombreArchivo, ios::binary);
+
+    if (!ventas) {
+        cout << "No se pudo abrir ventas.dat\n";
+        return;
+    }
+
+    float ingresos=0; Venta v; float gastos, dinero;
+
+    while (ventas.read((char*)&v, sizeof(Venta))) {
+        if (strcmp(v.getFecha(), fecha) == 0) {
+            ingresos += v.getTotal();
+        }
+    }
+    ventas.close();
+
+    ArchivoGastos ArchGas;
+    gastos=ArchGas.totalGastosPorDia(fecha);
+
+    dinero=ingresos-gastos;
+
+    ofstream txt("corte_diario.txt");
+    txt << "===== CORTE DIARIO =====\n";
+    txt << "Fecha: " << fecha << "\n\n";
+    txt << "Ingresos por ventas: $" << ingresos << "\n";
+    txt << "Gastos del dia: $" << gastos << "\n";
+    txt << "----------------------------\n";
+    txt << "SALDO FINAL: $" << dinero << "\n";
+    txt.close();
+
+    cout << "\nCORTE DIARIO GENERADO\n";
+    cout << "Ingresos: $" << ingresos << endl;
+    cout << "Gastos: $" << gastos << endl;
+    cout << "Saldo: $" << dinero << endl;
 }
 #endif

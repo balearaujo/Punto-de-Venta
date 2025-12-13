@@ -10,24 +10,27 @@ class Varitas : public Producto {
 private:
     char categoria[30];
     int idProveedor;
+    float costo;
 
 public:
-    Varitas() : Producto(), idProveedor(0) {
+    Varitas() : Producto(), idProveedor(0), costo(0) {
         categoria[0] = '\0';
     }
 
-    Varitas(int c, const char n[], float p, int e, const char cat[], int prov)
-        : Producto(c, n, p, e), idProveedor(prov) {
+    Varitas(int c, const char n[], float p, float cost, int e, const char cat[], int prov)
+        : Producto(c, n, p, e), idProveedor(prov), costo(cost) {
         strcpy(categoria, cat);
     }
 
     // Setters
     void setCategoria(const char cat[]) { strcpy(categoria, cat); }
     void setIdProveedor(int prov) { idProveedor = prov; }
+    void setCosto(float c){ costo=c;}
 
     // Getters
     char* getCategoria() { return categoria; }
     int getIdProveedor() const { return idProveedor; }
+    float getCosto()const {return costo;}
 
     // Operadores
     Varitas& operator+=(int cant) { existencia += cant; return *this; }
@@ -42,6 +45,7 @@ public:
         cout << "Existencia: "; in >> v.existencia;
         cout << "Categoria: "; in.ignore(); in.getline(v.categoria, 30);
         cout << "ID Proveedor: "; in >> v.idProveedor;
+        cout<<"Costo de compra: "; in>>v.costo;
         return in;
     }
 
@@ -50,6 +54,7 @@ public:
         v.mostrar(out);  // Llama a Producto::mostrar
         out << " | Categoria: " << v.categoria
             << " | Proveedor: " << v.idProveedor;
+            out<<"| Costo: "<<v.costo;
         return out;
     }
 };

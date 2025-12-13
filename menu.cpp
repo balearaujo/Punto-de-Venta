@@ -17,6 +17,7 @@ int main() {
     ArchivoClientes archivoClientes;
     ArchivoVentas ArchVentas;
     ArchivoUsuarios archivoUsuarios;
+    ArchivoGastos ArchGas;
 
     archivo.CrearArchivo();
     ArchivoProv.crearArchivo();
@@ -84,6 +85,9 @@ int main() {
             cout<<"19. Consulta por categoria\n";
             cout<<"20. Consulta producto vendido por Fecha\n";
             cout << "21. Consulta por cliente\n";
+            cout<<"22. Generar reporte de ventas y ganancias por dia en txt\n";
+            cout<<"23. Registrar detalle de gastos\n";
+            cout<<"23. Corte del dia";
         }
 
         cout << "0. Salir\n";
@@ -275,6 +279,21 @@ int main() {
 
                 ArchivoVentas().mostrarVentasCliente(id_cliente);
 
+                break;
+
+            case 22:
+                char fechat[20]; cout<<"Generar .txt por fecha: "; cin>>fechat;
+                //este lo q hace es hacerlo un .txt, sale? o sea no lo imprime como q lo guarda, si quieres pruebalo, lo encuentras en output
+                ArchivoVentas().reportePorDiaTxt(fechat);
+                break;
+
+            case 23:
+                ArchGas.registrarGasto();
+                break;
+
+            case 24:
+                char corte[11]; cout<<"Fecha del corte: "; cin>>corte;
+                ArchVentas.corteDiario(corte);
                 break;
             case 0:
                 cout << "\nCerrando sesión... \n";

@@ -13,6 +13,7 @@ private:
     char nombre[50];
     int cantidad;
     float precio;
+    float costo;
     float subtotal;
 
 public:
@@ -21,13 +22,15 @@ public:
         nombre[0]='\0';
         cantidad=0;
         precio=0;
+        costo=0;
         subtotal = 0;
     }
 
-    void setDatos(int c, const char n[],float p, int cant){
+    void setDatos(int c, const char n[],float p, float cost, int cant){
         codigo=c;
         strcpy(nombre,n);
         precio=p;
+        costo=cost;
         cantidad=cant;
         subtotal=precio * cantidad;
     }
@@ -37,7 +40,8 @@ public:
     int getCantidad() const {return cantidad; }
     int getPrecio() const {return precio;}
     float getSubtotal() const {return subtotal; }
-    
+    float getCosto() const {return costo; }
+    float getGanancia() const {return (precio-costo)*cantidad;}
     
     void imprimir (){
         cout<<codigo<< "|"
@@ -67,6 +71,7 @@ private:
 public:
     Venta(){
         folio=0;
+        id_cliente=0;
         numDetalles=0;
         subtotal= iva= total=0;
         fecha[0]= hora[0]='\0';
@@ -114,11 +119,11 @@ public:
         hora[8] = '\0';
     }
 
-    bool agregarDetalle (int cod, const char nom[], float precio, int cant, int id_client){
+    bool agregarDetalle (int cod, const char nom[], float precio, float costo, int cant, int id_client){
         if(numDetalles >=50){ return false;}
         if(cant<=0){ return false;}
 
-        detalles[numDetalles].setDatos(cod, nom, precio, cant);
+        detalles[numDetalles].setDatos(cod, nom, precio, costo, cant);
         numDetalles++;
         id_cliente = id_client;
         return true;
@@ -157,6 +162,14 @@ public:
         cout << "-------------------------------------\n";
         cout << "Gracias por su compra :) \n";
         cout << "=====================================\n\n";
+    }
+
+    float getGanancia()const{
+        float ganancia=0;
+        for (int i=0; i<numDetalles; i++){
+            ganancia+=detalles[i].getGanancia();
+        }
+        return ganancia;
     }
 
     void guardarEnArchivo(ofstream &out) {
