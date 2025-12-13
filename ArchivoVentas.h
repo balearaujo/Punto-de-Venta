@@ -28,6 +28,7 @@ public:
     void reportePorDiaTxt(const char *dia);
     void corteDiario(const char* fecha);
     void HistorialClienteTxt();
+    void Top10productos();
 };
 
 
@@ -423,5 +424,80 @@ void ArchivoVentas::HistorialClienteTxt() {
 
         cout << "Historial de clientes exportado a historial_clientes.txt\n";
     }
+
+void ArchivoVentas::Top10productos() {
+    ifstream ventas(nombreArchivo, ios::binary);
+    ofstream txt("top10_productos.txt");
+
+    if (!ventas || !txt) {
+        cout << "Error al abrir archivos\n";
+        return;
+    }
+
+    struct Top {
+        int codigo;
+        char nombre[50];
+        int cantidad;
+        float total;
+    };
+
+    Top lista[200];
+    int n = 0;
+
+    Venta v;
+
+    while (ventas.read((char*)&v, sizeof(Venta))) {
+        DetalleVenta* d = v.getDetalles();
+
+        for (int i = 0; i < v.getNumDetalles(); i++) {
+            int cod = d[i].getCodigo();
+            bool existe = false;
+
+            for (int j = 0; j < n; j++) {
+                if (lista[j].codigo == cod) {
+                    lista[j].cantidad += d[i].getCantidad();
+                    lista[j].total += d[i].getSubtotal();
+                    existe = true;
+                    break;
+                }
+            }
+
+            if (!existe) {
+                lista[n].codigo = cod;
+                strcpy(lista[n].nombre, d[i].getNombre());
+                lista[n].cantidad = d[i].getCantidad();
+                lista[n].total = d[i].getSubtotal();
+                n++;
+            }
+        }
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (lista[j].cantidad > lista[i].cantidad) {
+                Top temp = lista[i];
+                lista[i] = lista[j];
+                lista[j] = temp;
+            }
+        }
+    }
+
+    txt << "===== TOP 10 PRODUCTOS MAS VENDIDOS =====\n\n";
+
+    int limite = (n < 10) ? n : 10;
+
+    for (int i = 0; i < limite; i++) {
+        txt << i + 1 << ") Codigo: " << lista[i].codigo << " | "
+            << lista[i].nombre << "\n";
+        txt << "Cantidad vendida: " << lista[i].cantidad << "\n";
+        txt << "Total generado: $" << lista[i].total << "\n";
+        txt << "----------------------------\n";
+    }
+
+    ventas.close();
+    txt.close();
+
+    cout << "Top 10 generado correctamente\n";
+}
 
 #endif

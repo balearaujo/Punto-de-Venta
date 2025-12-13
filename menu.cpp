@@ -90,6 +90,7 @@ int main() {
             cout<<"24. Corte del dia\n";
             cout<<"25. Exportar el historial de clientes\n";
             cout<<"26. Exportar el historial de proveedores\n";
+            cout<<"27. Top 10 de productos.\n";
         }
 
         cout << "0. Salir\n";
@@ -303,6 +304,9 @@ int main() {
 
             case 26:
                 ArchivoProv.historialProveedoresTxt(archivo); break;
+
+            case 27:
+                ArchVentas.Top10productos(); break;
             case 0:
                 cout << "\nCerrando sesión... \n";
                 break;

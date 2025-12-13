@@ -1,0 +1,6 @@
+===== TOP 10 PRODUCTOS MAS VENDIDOS =====
+
+1) Codigo: 2 | pruba2
+Cantidad vendida: 1
+Total generado: $33
+----------------------------
