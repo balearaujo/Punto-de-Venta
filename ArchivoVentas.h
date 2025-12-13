@@ -27,7 +27,7 @@ public:
     bool consultarPorFecha(const char* fechaBuscada);
     void reportePorDiaTxt(const char *dia);
     void corteDiario(const char* fecha);
-
+    void HistorialClienteTxt();
 };
 
 
@@ -366,4 +366,62 @@ void ArchivoVentas::corteDiario(const char* fecha){
     cout << "Gastos: $" << gastos << endl;
     cout << "Saldo: $" << dinero << endl;
 }
+
+void ArchivoVentas::HistorialClienteTxt() {
+        ifstream ventas(nombreArchivo, ios::binary);
+        ofstream txt("historial_clientes.txt");
+
+
+        if (!ventas || !txt) {
+            cout << "Error al abrir archivos\n";
+            return;
+        }
+
+        struct Historial {
+            int id;
+            float total;
+            int compras;
+        };
+
+        Historial hist[100];
+        int n = 0;
+
+        Venta v;
+
+        while (ventas.read((char*)&v, sizeof(Venta))) {
+            int id = v.getCliente();
+            bool encontrado = false;
+
+            for (int i = 0; i < n; i++) {
+                if (hist[i].id == id) {
+                    hist[i].total += v.getTotal();
+                    hist[i].compras++;
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            if (!encontrado) {
+                hist[n].id = id;
+                hist[n].total = v.getTotal();
+                hist[n].compras = 1;
+                n++;
+            }
+        }
+
+        txt << "===== HISTORIAL DE CLIENTES =====\n\n";
+
+        for (int i = 0; i < n; i++) {
+            txt << "Cliente ID: " << hist[i].id << "\n";
+            txt << "Compras realizadas: " << hist[i].compras << "\n";
+            txt << "Total gastado: $" << hist[i].total << "\n";
+            txt << "------------------------------\n";
+        }
+
+        ventas.close();
+        txt.close();
+
+        cout << "Historial de clientes exportado a historial_clientes.txt\n";
+    }
+
 #endif

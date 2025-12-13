@@ -1,0 +1,6 @@
+===== HISTORIAL DE PROVEEDORES =====
+
+Proveedor ID: 12
+Productos vendidos: 1
+Total generado: $33
+-----------------------------

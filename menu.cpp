@@ -80,14 +80,16 @@ int main() {
             cout<<"14. Agregar usuario\n";
             cout<<"15. Mostrar ventas historicas\n";
             cout<<"16. Reporte por producto\n";
-            cout<<"Aun no m sale el 17\n";
+            cout<<"Aun no m sale el 17//ACTUALIZACION; CREO Q ESTA REPETIDO EN EL PUNYO 20\n";
             cout<<"18. Consulta por IdProveedor\n";
             cout<<"19. Consulta por categoria\n";
             cout<<"20. Consulta producto vendido por Fecha\n";
             cout << "21. Consulta por cliente\n";
             cout<<"22. Generar reporte de ventas y ganancias por dia en txt\n";
             cout<<"23. Registrar detalle de gastos\n";
-            cout<<"23. Corte del dia";
+            cout<<"24. Corte del dia\n";
+            cout<<"25. Exportar el historial de clientes\n";
+            cout<<"26. Exportar el historial de proveedores\n";
         }
 
         cout << "0. Salir\n";
@@ -262,7 +264,7 @@ int main() {
                     cout<<"Acceso denegado.\n"; break;
                 }
                 char Fech[20]; cout<<"Ingresa la fecha a buscar DD/MM/AAAA: "; cin>>Fech;
-                ArchivoVentas().consultarPorFecha(Fech);
+                ArchVentas.consultarPorFecha(Fech);
                 break;
             
             case 21:
@@ -277,14 +279,14 @@ int main() {
                     break;
                 }
 
-                ArchivoVentas().mostrarVentasCliente(id_cliente);
+                ArchVentas.mostrarVentasCliente(id_cliente);
 
                 break;
 
             case 22:
                 char fechat[20]; cout<<"Generar .txt por fecha: "; cin>>fechat;
                 //este lo q hace es hacerlo un .txt, sale? o sea no lo imprime como q lo guarda, si quieres pruebalo, lo encuentras en output
-                ArchivoVentas().reportePorDiaTxt(fechat);
+                ArchVentas.reportePorDiaTxt(fechat);
                 break;
 
             case 23:
@@ -295,6 +297,12 @@ int main() {
                 char corte[11]; cout<<"Fecha del corte: "; cin>>corte;
                 ArchVentas.corteDiario(corte);
                 break;
+
+            case 25:
+                ArchVentas.HistorialClienteTxt(); break;
+
+            case 26:
+                ArchivoProv.historialProveedoresTxt(archivo); break;
             case 0:
                 cout << "\nCerrando sesión... \n";
                 break;

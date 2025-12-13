@@ -117,4 +117,75 @@ public:
 
         cout << "Proveedor eliminado si existía.\n";
     }
+
+    void historialProveedoresTxt(ArchivoProductos &ap) {
+        ifstream ventas("ventas.dat", ios::binary);
+        ofstream txt("historial_proveedores.txt");
+
+        if (!ventas || !txt) {
+            cout << "Error al abrir archivos\n";
+            return;
+        }
+
+        struct Historial {
+            int idProv;
+            int productos;
+            float total;
+        };
+
+        Historial hist[50];
+        int n = 0;
+
+        Venta v;
+
+        while (ventas.read((char*)&v, sizeof(Venta))) {
+
+            DetalleVenta* d = v.getDetalles();
+
+            for (int i = 0; i < v.getNumDetalles(); i++) {
+
+                Varitas p;
+                long pos;
+
+                if (!ap.obtenerProducto(d[i].getCodigo(), p, pos))
+                    continue;
+
+                int idProv = p.getIdProveedor();
+                float subtotal = d[i].getSubtotal();
+
+                bool encontrado = false;
+
+                for (int j = 0; j < n; j++) {
+                    if (hist[j].idProv == idProv) {
+                        hist[j].productos += d[i].getCantidad();
+                        hist[j].total += subtotal;
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+                if (!encontrado) {
+                    hist[n].idProv = idProv;
+                    hist[n].productos = d[i].getCantidad();
+                    hist[n].total = subtotal;
+                    n++;
+                }
+            }
+        }
+
+        txt << "===== HISTORIAL DE PROVEEDORES =====\n\n";
+
+        for (int i = 0; i < n; i++) {
+            txt << "Proveedor ID: " << hist[i].idProv << "\n";
+            txt << "Productos vendidos: " << hist[i].productos << "\n";
+            txt << "Total generado: $" << hist[i].total << "\n";
+            txt << "-----------------------------\n";
+        }
+
+        ventas.close();
+        txt.close();
+
+        cout << "Historial de proveedores generado ✔\n";
+    }
+
 };

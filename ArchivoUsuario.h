@@ -206,6 +206,7 @@ public:
         cout << "Usuario no encontrado\n";
         archivo.close();
     }
+
 };
 
 #endif
