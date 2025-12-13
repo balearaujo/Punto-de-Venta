@@ -55,6 +55,7 @@ class Venta {
 private:
     int folio;
     int id_cliente;
+    int id_usuario;
 
     static int ultimoFolio;
     char fecha[25];
@@ -72,13 +73,18 @@ public:
     Venta(){
         folio=0;
         id_cliente=0;
+        id_usuario=0;
         numDetalles=0;
         subtotal= iva= total=0;
         fecha[0]= hora[0]='\0';
         metodoPago[0]='\0';
     }
+    public:
+    void setCliente(int id) {id_cliente = id;}
+    int getCliente() const {return id_cliente;}
 
-    
+    void setUsuario(int idu){id_usuario=idu;}
+    int getUsuario()const {return id_usuario;}
     const char* getFecha() const {return fecha;}
     const char* getHora()const{return hora;}
     DetalleVenta* getDetalles() {return detalles;}

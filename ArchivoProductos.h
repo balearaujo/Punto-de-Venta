@@ -22,7 +22,8 @@ public:
     bool consultaporCategoria(char * cat);
     bool consulraporIdProv(int IdPr);
     bool consultaporFecha(char* f);
-    
+    void ajustarPrecioPorcentaje(float porcentaje);
+    void aplicarMayoreoCategoria(const char* categoria, float descuento); 
 };
 
 void ArchivoProductos::CrearArchivo() {
@@ -259,8 +260,57 @@ void ArchivoProductos::eliminarProducto(int codigo) {
    };
    if(encontrado) cout << "Producto eliminado\n";
    else cout<<"Producto no encontrado, ningun registro se ha eliminado";
+}
 
-   
+void ArchivoProductos::ajustarPrecioPorcentaje(float porcentaje){
+    fstream archivo(nombreArchivo,ios::in |ios::out| ios::binary);
+    if(!archivo){
+        cout<<"No se pudo abrir el archivo de productos :(\n";
+        return;
+    }
+    Varitas p;
+    long pos;
+    float factor=1+porcentaje/100.0;
+
+    while (archivo.read((char*)&p, sizeof(Varitas))) {
+        pos=archivo.tellg()- sizeof(Varitas);
+        float precioNuevo= p.getPrecio()*factor;
+        if (precioNuevo<0) precioNuevo=0;
+        p.setPrecio(precioNuevo);
+        archivo.seekp(pos);
+        archivo.write((char*)&p,sizeof(Varitas));
+        archivo.flush();
+    }
+    archivo.close();
+    cout<<"\nPrecios ajustados en"<<porcentaje<<"%correctamente.\n"; 
+}
+
+void ArchivoProductos::aplicarMayoreoCategoria(const char* categoria,float descuento){
+    fstream archivo(nombreArchivo, ios::in|ios::out|ios::binary);
+    if(!archivo){
+        cout<<"No se pudo abrir el archivo de productos :(\n";
+        return;
+    }
+    Varitas p;
+    long pos;
+    float factor=1-descuento/100.0;
+    while (archivo.read((char*)&p, sizeof(Varitas))) {
+        if (strcmp(p.getCategoria(), categoria)==0){
+        pos=archivo.tellg()-sizeof(Varitas);
+
+        float nuevoPrecio= p.getPrecio()*factor;
+        if (nuevoPrecio<0) nuevoPrecio=0;
+
+        p.setPrecio(nuevoPrecio);
+        archivo.seekp(pos);
+        archivo.write((char*)&p,sizeof(Varitas));
+        archivo.flush();
+        }
+    }
+    archivo.close();
+    cout<<"\nMayoreo aplicado a la categoria: "<<categoria<<"\n"; 
+
+
 }
 
 #endif

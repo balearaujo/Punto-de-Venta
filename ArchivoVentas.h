@@ -7,6 +7,7 @@
 #include "Venta.h"
 #include "ArchivoProductos.h"
 #include "Gatos.h"
+#include "VentaPendiente.h"
 using namespace std;
 
 
@@ -29,6 +30,9 @@ public:
     void corteDiario(const char* fecha);
     void HistorialClienteTxt();
     void Top10productos();
+    void historialPorUsuarioSemana(int idUsuario, const char fechaInicio[],const char fechaFin[]);
+    void registrarVentaPendiente(ArchivoProductos& ap,VentaPendiente& vp,int idCliente);
+
 };
 
 
@@ -499,5 +503,66 @@ void ArchivoVentas::Top10productos() {
 
     cout << "Top 10 generado correctamente\n";
 }
+
+void ArchivoVentas:: historialPorUsuarioSemana(int idUsuario, const char fechaInicio[],const char fechaFin[]){
+    ifstream in (nombreArchivo, ios::binary);
+    Venta v;
+
+    while (in.read((char*)&v, sizeof(Venta))){
+        if (v.getUsuario()==idUsuario &&
+            strcmp(v.getFecha(), fechaInicio)>=0 &&
+            strcmp(v.getFecha(), fechaFin)<=0){
+                cout<<"\n==============================\n";
+                cout<<"Folio: "<<v.getFolio()<<endl;
+                cout<<"Fecha: "<<v.getFecha()<<endl;
+                cout<<"Hora: "<<v.getHora()<<endl;
+                cout<<"Cliente: "<<v.getCliente()<<endl;
+                cout<<"Productos:\n";
+
+                for(int i=0; i<v.getNumDetalles(); i++){
+                    v.getDetalles()[i].imprimir();
+                }
+                cout<<"Total: $"<<v.getTotal()<<endl;
+            }
+        }
+        in.close();
+}
+
+void ArchivoVentas::registrarVentaPendiente(ArchivoProductos& ap,
+                                            VentaPendiente& vp,
+                                            int idCliente) {
+    int codigo, cantidad;
+    long pos;
+
+    cout << "Codigo del producto: ";
+    cin >> codigo;
+
+    Varitas p;
+    if (!ap.obtenerProducto(codigo, p, pos)) {
+        cout << "Producto no encontrado\n";
+        return;
+    }
+
+    cout << "Cantidad: ";
+    cin >> cantidad;
+
+    if (cantidad <= 0 || cantidad > p.getExistencia()) {
+        cout << "Cantidad invalida o stock insuficiente\n";
+        return;
+    }
+
+    vp.setCliente(idCliente);
+    vp.agregarDetalle(
+        p.getCodigo(),
+        p.getNombre(),
+        p.getPrecio(),
+        p.getCosto(),
+        cantidad,
+        idCliente
+    );
+}
+
+
+
 
 #endif
