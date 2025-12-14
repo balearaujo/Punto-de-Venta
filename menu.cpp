@@ -50,6 +50,37 @@ void pausa(){
     system("pause");
 }
 
+int leerEnteroSeguro(){
+    int x;
+    while(!(cin >> x)){
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Entrada invalida. Ingrese un numero: ";
+    }
+    return x;
+}
+
+float leerFloatSeguro(){
+    float x;
+    while(!(cin >> x)){
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Entrada invalida. Ingrese un numero valido: ";
+    }
+    return x;
+}
+
+char leerCharSN(){
+    char c;
+    cin >> c;
+    while(c!='s' && c!='S' && c!='n' && c!='N'){
+        cout << "Ingrese solo (s/n): ";
+        cin >> c;
+    }
+    return c;
+}
+
+
 int main() {
     archivo.CrearArchivo();
     ArchivoProv.crearArchivo();
@@ -122,7 +153,7 @@ void menu(){
         }
         cout<<"9. Ayuda\n";
         cout<<"0. Salir\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1: VentasMenu(); break;
@@ -164,7 +195,7 @@ void VentasMenu(){
         cout<<"\n1. Realizar ventas\n";
         cout<<"2. Opciones de carrito\n";
         cout<<"0. Regresar a menu principal\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1: {
@@ -174,7 +205,7 @@ void VentasMenu(){
                 int id_cliente;
 
                 cout << "ID del cliente:\n";
-                cin >> id_cliente;
+                id_cliente=leerEnteroSeguro();
 
                 if(archivoClientes.buscarCliente(id_cliente)!=1){
                     cout << "Cliente no registrado\n";
@@ -186,7 +217,7 @@ void VentasMenu(){
                     ArchVentas.registrarVenta(archivo,id_cliente);
 
                     cout << "¿Vender otro producto? (s/n): ";
-                    cin >> continuar;
+                    continuar = leerCharSN();
 
                 } while (continuar == 's' || continuar == 'S');
 
@@ -212,13 +243,13 @@ void OpcionesdeCarrito(){
         cout << "2. Mostrar carrito\n";
         cout << "3. Confirmar carrito\n";
         cout<<"0. Regresar a Menu de Ventas\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:{
                 int id_cliente;
                 cout << "ID del cliente:\n";
-                cin >> id_cliente;
+                id_cliente=leerEnteroSeguro();
 
                 if (archivoClientes.buscarCliente(id_cliente) != 1) {
                     cout << "Cliente no registrado\n";
@@ -234,7 +265,7 @@ void OpcionesdeCarrito(){
                 do {
                     ArchVentas.registrarVentaPendiente(archivo, vp, id_cliente);
                     cout << "Agregar otro producto (s/n): ";
-                    cin >> continuar;
+                    continuar = leerCharSN();
                 } while (continuar == 's' || continuar == 'S');
 
                 vp.calcularTotales();
@@ -267,7 +298,7 @@ void ProductosMenu(){
         cout << "5. Eliminar producto\n";
         }
         cout<<"0. Regresar\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:
@@ -277,7 +308,7 @@ void ProductosMenu(){
             case 2: {
                 int c;
                 cout << "Codigo del producto: ";
-                cin >> c;
+                c=leerEnteroSeguro();
                 archivo.buscarProducto(c); pausa();
             } break;
 
@@ -295,7 +326,7 @@ void ProductosMenu(){
             case 5:{
                 if (!esAdmin) {cout<<"Acceso denegado"; pausa(); break;}
                 int c;
-                cout << "Codigo del producto: "; cin >> c;
+                cout << "Codigo del producto: "; c=leerEnteroSeguro();
                 archivo.eliminarProducto(c); pausa();
                 }
                 break;
@@ -316,7 +347,7 @@ void Modificador(){
         cout<<"2. Ajustar precios por porcentaje\n";
         cout<<"3. Aplicar mayoreo\n";
         cout<<"0. Regresar\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:{
@@ -330,7 +361,7 @@ void Modificador(){
             case 2:
                 float porc;
                 cout<<"Porcentaje(+  aumenta, -disminuye): ";
-                cin>>porc;
+                porc = leerFloatSeguro();
                 archivo.ajustarPrecioPorcentaje(porc); pausa();
                 break;
             case 3: {
@@ -340,7 +371,7 @@ void Modificador(){
                 cout<<"Categoria: ";
                 cin>>cat;
                 cout<<"Descuento de mayoreo (%): ";
-                cin>>desc;
+                desc = leerFloatSeguro();
 
                 archivo.aplicarMayoreoCategoria(cat, desc); pausa();
                 break;
@@ -363,7 +394,7 @@ void ClienteMenu(){
         cout << "4. Modificar Cliente\n";
         cout<<"5. Generar historial en .txt\n";
         cout<<"0. Regresar\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:
@@ -378,7 +409,7 @@ void ClienteMenu(){
                 {
                     int id;
                     cout << "ID del cliente: ";
-                    cin >> id;
+                    id = leerEnteroSeguro();
                     archivoClientes.buscarCliente(id); pausa();
                 }
                 break;
@@ -387,7 +418,7 @@ void ClienteMenu(){
                 {
                     int id;
                     cout << "ID del cliente a modificar: ";
-                    cin >> id;
+                    id = leerEnteroSeguro();
                     archivoClientes.modificarCliente(id); pausa();
                 }
                 break;
@@ -411,7 +442,7 @@ void ProveedoresMenu(){
         cout << "2. Agregar proveedor\n";
         cout<<"3. Generar historial en .txt\n";
         cout<<"0. Regresar\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:
@@ -439,7 +470,7 @@ void UsuariosMenu(){
         cout << "2. Agregar usuario\n";
         cout<<"3. Historial en .txt\n";
         cout<<"0. Regresar\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:
@@ -453,7 +484,7 @@ void UsuariosMenu(){
                 char fechaInicio[11], fechaFin[11];
 
                 cout << "ID del usuario: ";
-                cin >> idUsuario;
+                idUsuario = leerEnteroSeguro();
 
                 cout << "Fecha inicio (YYYY-MM-DD): ";
                 cin >> fechaInicio;
@@ -479,7 +510,7 @@ void ReportesMenu(){
         cout<<"3. Historial por usuario\n";
         cout<<"4. Exportables a .txt\n";
         cout<<"0. Regresar\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:
@@ -495,7 +526,7 @@ void ReportesMenu(){
                 char fechaInicio[11], fechaFin[11];
 
                 cout << "ID del usuario: ";
-                cin >> idUsuario;
+                idUsuario = leerEnteroSeguro();
 
                 cout << "Fecha inicio (YYYY-MM-DD): ";
                 cin >> fechaInicio;
@@ -525,7 +556,7 @@ void Exportables(){
         cout << "5. Top 10 de productos.\n";
         cout<<"6. Movimientos de caja\n";
         cout<<"0. Regresar\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:
@@ -551,8 +582,6 @@ void Exportables(){
             case 6:
                 char fec[11]; cout<<"Ingresa la fecha para mostar los movimientos de caja: "; cin>>fec;
                 ArchVentas.movimientosCaja(fec); cout<<"Ahora visible en .txt";pausa(); break;
-
-            break;
             case 0: return;
             default: cout<<"Opcion invalida"; pausa();
         }
@@ -570,7 +599,7 @@ void ConsultasMenu(){
         cout << "3. Consulta producto vendido por Fecha\n";
         cout << "4. Consulta por cliente\n";
         cout<<"0. Regresar\n"; 
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:
@@ -591,7 +620,7 @@ void ConsultasMenu(){
             case 4:
                 int id_cliente;
                 cout << "ID del cliente:\n";
-                cin >> id_cliente;
+                id_cliente = leerEnteroSeguro();
 
                 if(archivoClientes.buscarCliente(id_cliente)!=1){
                     cout << "No fue posible continuar el proceso por falta de un cliente\n"; pausa();
@@ -617,7 +646,7 @@ void AdministacionMenu(){
         cout << "3. Corte del dia\n";
         cout<<"4. Movimientos de caja\n";
         cout<<"0. Regresar\n";
-        cout<<"> "; cin>>opcion;
+        cout<<"> "; opcion = leerEnteroSeguro();
 
         switch(opcion){
             case 1:
