@@ -99,6 +99,8 @@ int main() {
             cout << "30. Top 10 de productos.\n";
             cout << "31. Ajustar precios por porcentaje\n";
             cout << "32. Aplicar mayoreo\n";
+            cout<<"33. Historial por usuario\n";
+            cout<<"35. Movimientos de caja\n";
         }
 
         cout << "0. Salir\n";
@@ -120,6 +122,7 @@ int main() {
 
                 if(archivoClientes.buscarCliente(id_cliente)!=1){
                     cout << "No fue posible continuar el proceso por falta de un cliente\n";
+                    
                     break;
                 }
 
@@ -378,7 +381,7 @@ int main() {
                 cin>>porc;
                 archivo.ajustarPrecioPorcentaje(porc);
                 break;
-           case 32: {
+            case 32: {
                 if(!esAdmin){
                     cout<<"Acceso denegado.\n";
                     break;
@@ -395,10 +398,27 @@ int main() {
                 archivo.aplicarMayoreoCategoria(cat, desc);
                 break;
 }
+            case 34:
+            int idUsuario;
+            char fechaInicio[11], fechaFin[11];
 
-                case 0:
-                cout << "\nCerrando sesión... \n";
-                break;
+            cout << "ID del usuario: ";
+            cin >> idUsuario;
+
+            cout << "Fecha inicio (YYYY-MM-DD): ";
+            cin >> fechaInicio;
+
+            cout << "Fecha fin (YYYY-MM-DD): ";
+            cin >> fechaFin;
+
+            ArchVentas.historialPorUsuarioSemana(idUsuario, fechaInicio, fechaFin); break;
+
+            case 35:
+            char fec[11]; cout<<"Ingresa la fecha para mostar los movimientos de caja: "; cin>>fec;
+            ArchVentas.movimientosCaja(fec); cout<<"Ahora visible en .txt"; break;
+            case 0:
+            cout << "\nCerrando sesión... \n";
+            break;
 
             default:
                 cout << "Opción inválida.\n";

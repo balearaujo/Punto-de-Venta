@@ -297,7 +297,6 @@ void ArchivoProductos::aplicarMayoreoCategoria(const char* categoria,float descu
     while (archivo.read((char*)&p, sizeof(Varitas))) {
         if (strcmp(p.getCategoria(), categoria)==0){
         pos=archivo.tellg()-sizeof(Varitas);
-
         float nuevoPrecio= p.getPrecio()*factor;
         if (nuevoPrecio<0) nuevoPrecio=0;
 

@@ -32,7 +32,7 @@ public:
     void Top10productos();
     void historialPorUsuarioSemana(int idUsuario, const char fechaInicio[],const char fechaFin[]);
     void registrarVentaPendiente(ArchivoProductos& ap,VentaPendiente& vp,int idCliente);
-
+    void movimientosCaja(const char* fecha);
 };
 
 
@@ -46,7 +46,8 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
     Venta venta;           
     venta.generarFolio();
     venta.generarFechaHora();
-
+    venta.setCliente(id_cliente);
+    
     int codigo, cantidad;
     char continuar = 's';
 
@@ -103,8 +104,7 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
     else {
     cout << "Metodo invalido, se cancela la venta.\n";
     return false;
-}
-
+    }
         venta.calcularTotales();
 
         ofstream archivo(nombreArchivo,ios::app|ios::binary);
@@ -112,14 +112,13 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
             cout<<"Error!! No se puede abrir el archivo ventas.dat\n";
             return false;
         }
-
         venta.guardarEnArchivo(archivo);
         archivo.close();
 
         cout<<"\nVenta registrada correctamente.\n";
         venta.imprimirTicket();
         return true;
-    }
+}
     
 
 void ArchivoVentas::mostrarVentas() {
@@ -562,7 +561,31 @@ void ArchivoVentas::registrarVentaPendiente(ArchivoProductos& ap,
     );
 }
 
+void ArchivoVentas::movimientosCaja(const char* fecha) {
+    ifstream ventas("ventas.dat", ios::binary);
+    ifstream gastos("gastos.dat", ios::binary);
+    ofstream txt("movimientos_caja.txt");
 
+    txt << "===== MOVIMIENTOS DE CAJA =====\n";
+    txt << "Fecha: " << fecha << "\n\n";
 
+    Venta v;
+    while (ventas.read((char*)&v, sizeof(Venta))) {
+        if (strcmp(v.getFecha(), fecha) == 0) {
+            txt << "+ $" << v.getTotal()
+                << "  Venta folio " << v.getFolio() << "\n";
+        }
+    }
+
+    Gasto g;
+    while (gastos.read((char*)&g, sizeof(Gasto))) {
+        if (strcmp(g.getFecha(), fecha) == 0) {
+            txt << "- $" << g.getMonto()
+                << "  " << g.getConcepto() << "\n";
+        }
+    }
+
+    txt.close();
+}
 
 #endif
