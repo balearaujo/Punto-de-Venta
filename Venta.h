@@ -92,7 +92,6 @@ public:
 
     void generarFolio(){ folio=++ultimoFolio;}
     int getFolio()const{ return folio;}
-    int getCliente()const {return id_cliente;}
     void setFolio(int f) { folio=f;}
     void setMetodoPago(const char mp[]){strcpy(metodoPago, mp);};
 

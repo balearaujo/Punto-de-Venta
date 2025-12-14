@@ -1,7 +1,9 @@
 #ifndef VENTAPENDIENTE_H
 #define VENTAPENDIENTE_H
-
 #include "Venta.h"
+#include <iostream>
+using namespace std;
+
 
 class VentaPendiente : public Venta {
 private:
@@ -20,7 +22,7 @@ public:
         return confirmada;
     }
 
-    void mostrarResumen() {
+    void mostrarResumen() const {
         cout << "\n--- VENTA PENDIENTE ---\n";
         cout << "Cliente ID: " << getCliente() << endl;
         cout << "Productos: " << getCantidadTotalProductos() << endl;

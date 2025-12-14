@@ -1,8 +1,10 @@
 #ifndef CARRITO_H
 #define CARRITO_H
-
 #include "VentaPendiente.h"
 #include "ArchivoVentas.h"
+#include <iostream>
+using namespace std;
+
 
 class Carrito {
 private:

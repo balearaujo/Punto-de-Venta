@@ -30,7 +30,7 @@ int main() {
 
     do {
             
-        cout << "\n ====== Wasap ==== \n";
+        cout << "\n ====================== \n";
         cout << "Agregar usuario (0) / iniciar secion (1)\n";
 
         int tipo;
@@ -97,8 +97,8 @@ int main() {
             cout << "28. Exportar el historial de clientes\n";
             cout << "29. Exportar el historial de proveedores\n";
             cout << "30. Top 10 de productos.\n";
-            cout << "31. Ajustar precios por porcentaje";
-            cout << "32. Aplicar mayoreo";
+            cout << "31. Ajustar precios por porcentaje\n";
+            cout << "32. Aplicar mayoreo\n";
         }
 
         cout << "0. Salir\n";
@@ -378,10 +378,12 @@ int main() {
                 cin>>porc;
                 archivo.ajustarPrecioPorcentaje(porc);
                 break;
-            case 32:
+           case 32: {
                 if(!esAdmin){
-                    cout<<"Acceso denegado.\n";break;
+                    cout<<"Acceso denegado.\n";
+                    break;
                 }
+
                 char cat[30];
                 float desc;
 
@@ -389,8 +391,11 @@ int main() {
                 cin>>cat;
                 cout<<"Descuento de mayoreo (%): ";
                 cin>>desc;
+
                 archivo.aplicarMayoreoCategoria(cat, desc);
                 break;
+}
+
                 case 0:
                 cout << "\nCerrando sesión... \n";
                 break;
