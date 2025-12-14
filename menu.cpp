@@ -20,6 +20,7 @@ ArchivoUsuarios archivoUsuarios;
 ArchivoGastos ArchGas;
 
 void menu();
+void ayuda();
 void VentasMenu(); 
 void OpcionesdeCarrito();
 void ProductosMenu();
@@ -117,7 +118,9 @@ void menu(){
         cout<<"6. Reportes\n";
         cout<<"7. Consultas\n";
         cout<<"8. Administracion\n";
+        
         }
+        cout<<"9. Ayuda\n";
         cout<<"0. Salir\n";
         cout<<"> "; cin>>opcion;
 
@@ -142,6 +145,9 @@ void menu(){
             case 8: 
             if (!esAdmin) {cout<<"Acceso denegado";  pausa(); break;}
             AdministacionMenu(); break;
+
+            case 9:
+            ayuda(); break;
 
             case 0: cout<<"Saliendo..."; break;
             default: cout<<"Opcion invalida"; pausa(); break; 
@@ -403,7 +409,7 @@ void ProveedoresMenu(){
         titulo("MANEJO DE PROVEEDORES");
         cout << "\n1. Lista de proveedores\n";
         cout << "2. Agregar proveedor\n";
-        cout<<"3. Generar historial en .txt";
+        cout<<"3. Generar historial en .txt\n";
         cout<<"0. Regresar\n";
         cout<<"> "; cin>>opcion;
 
@@ -431,7 +437,7 @@ void UsuariosMenu(){
         titulo("MANEJO DE USUARIOS");
         cout << "\n1. Administrar usuarios (listar)\n";
         cout << "2. Agregar usuario\n";
-        cout<<"3. Historial en .txt";
+        cout<<"3. Historial en .txt\n";
         cout<<"0. Regresar\n";
         cout<<"> "; cin>>opcion;
 
@@ -637,4 +643,50 @@ void AdministacionMenu(){
         }
 
     }while (opcion!=0);
+}
+
+
+void ayuda(){
+    titulo("AYUDA DEL SISTEMA");
+
+    cout<<"Este sistema fue disenado para facilitar la administracion\n";
+    cout<<"de un punto de venta, administrando elementos como ventas,\n";
+    cout<<"productos, clientes y usuarios.\n\n";
+
+    cout<<"FUNCIONES PRINCIPALES:\n\n";
+
+    cout<<"- Ventas:\n";
+    cout<<"  Registro de ventas directas, manejo de carrito y\n";
+    cout<<"  confirmacion de ventas simultaneas.\n\n";
+
+    cout<<"- Productos:\n";
+    cout<<"  Consulta, alta, modificacion y eliminacion de productos.\n";
+    cout<<"  Algunas opciones estan restringidas a administradores.\n\n";
+
+    cout<<"FUNCIONES DIRIGIDAS A ADMINISTRADORES: \n\n";
+    cout<<"- Clientes:\n";
+    cout<<"  Registro, consulta y modificacion de clientes,\n";
+    cout<<"  asi como generacion de historiales.\n\n";
+
+    cout<<"- Proveedores:\n";
+    cout<<"  Administracion de proveedores y reportes de historial.\n\n";
+
+    cout<<"- Usuarios:\n";
+    cout<<"  Control de usuarios, roles y consulta de actividades.\n\n";
+
+    cout<<"- Reportes y Exportables:\n";
+    cout<<"  Generacion de reportes, cortes del dia y archivos .txt.\n\n";
+
+    cout<<"- Consultas:\n";
+    cout<<"  Busquedas por categoria, proveedor, cliente o fecha.\n\n";
+
+    cout<<"CONTROL DE ACCESO:\n";
+    cout<<"El sistema cuenta con autenticacion por usuario y rol.\n";
+    cout<<"Las opciones disponibles dependen del tipo de usuario.\n\n";
+
+    cout<<"NOTA:\n";
+    cout<<"Los archivos exportables se guardan automaticamente\n";
+    cout<<"en la carpeta del proyecto.\n";
+
+    pausa();
 }
