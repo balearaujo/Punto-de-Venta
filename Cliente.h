@@ -57,7 +57,7 @@ public:
     char* getTelefono(){ return telefono; }
     void agregarPuntos(int p){puntos +=p;}
 
-   void mostrarCliente() { //metodo virtual para polimorfismo
+    void mostrarCliente() { 
         cout << "ID: " << id << "\nNombre: " << nombre << "\nDireccion: " << direccion << "\nTelefono: " << telefono << "\npuntos: "<<puntos<<endl;
         if (puntos>=50) cout<<"--------Cliente frecuente--------\n";
     }

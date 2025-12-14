@@ -45,7 +45,7 @@ void ArchivoProductos::agregarProducto() {
             cout << "ERROR: Ya existe un producto con ese código.\n";
             cout << "Ingresa otro código (-1 para terminar): ";
             cin >> code;
-            continue; // ← ahora sí existe el while
+            continue; 
         }
 
         Varitas v;
@@ -211,8 +211,8 @@ void ArchivoProductos::modificarProducto(int codigo) {
 
 
             archivo.clear();
-            archivo.seekp(pos, ios::beg); // 2) Regresas al inicio del registro
-            archivo.write(reinterpret_cast<char*>(&v),sizeof(Varitas)); // 3) Sobrescribes
+            archivo.seekp(pos, ios::beg); // Regresas al inicio del registro
+            archivo.write(reinterpret_cast<char*>(&v),sizeof(Varitas)); // Sobrescribes
 
             if(!archivo) cout <<"Error al escribir la modificacion\n";
             cout << "Producto modificado\n";

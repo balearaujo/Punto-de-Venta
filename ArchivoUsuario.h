@@ -63,9 +63,6 @@ public:
         return nullptr;
     }
 
-    // ------------------------------------------------------
-    //  AGREGAR USUARIO
-    // ------------------------------------------------------
     void agregarUsuario() {
         ofstream archivo(nombreArchivo, ios::app | ios::binary);
         if (!archivo) {
@@ -94,9 +91,6 @@ public:
         cout << "Usuario agregado correctamente.\n";
     }
 
-    // ------------------------------------------------------
-    //  MOSTRAR TODOS
-    // ------------------------------------------------------
     void mostrarUsuarios() {
         ifstream archivo(nombreArchivo, ios::binary);
         if (!archivo) {
@@ -114,9 +108,6 @@ public:
         archivo.close();
     }
 
-    // ------------------------------------------------------
-    //  BUSCAR USUARIO
-    // ------------------------------------------------------
     bool buscarUsuario(int id, Usuario& outUser, long& pos) {
         ifstream archivo(nombreArchivo, ios::binary);
         if (!archivo) return false;
@@ -137,9 +128,6 @@ public:
         return false;
     }
 
-    // ------------------------------------------------------
-    //  DESACTIVAR USUARIO
-    // ------------------------------------------------------
     void desactivarUsuario(int id) {
         fstream archivo(nombreArchivo, ios::in | ios::out | ios::binary);
 
@@ -170,9 +158,6 @@ public:
         archivo.close();
     }
 
-    // ------------------------------------------------------
-    //  CAMBIAR CONTRASEÑA
-    // ------------------------------------------------------
     void cambiarContrasena(int id) {
         fstream archivo(nombreArchivo, ios::in | ios::out | ios::binary);
 

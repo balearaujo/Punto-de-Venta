@@ -1,5 +1,4 @@
 ===== MOVIMIENTOS DE CAJA =====
-Fecha: 13/12/2025
+Fecha: 14/12/2025
 
-+ $23.2  Venta folio 1
-+ $19.488  Venta folio 1
++ $38.976  Venta folio 1

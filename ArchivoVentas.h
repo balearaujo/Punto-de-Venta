@@ -179,6 +179,7 @@ bool ArchivoVentas::buscarVenta(int folio) {
     return false;
 }
 
+//creo q esta esta repetida
 void ArchivoVentas::reportePorDia(const char* dia) {
     ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo) {
