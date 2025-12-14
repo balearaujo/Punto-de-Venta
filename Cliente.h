@@ -9,6 +9,7 @@ private:
     char nombre[50];
     char direccion[100];
     char telefono[15];
+    int puntos;
 
 public:
     Cliente(){
@@ -16,6 +17,7 @@ public:
         strcpy(nombre, "");
         strcpy(direccion, "");
         strcpy(telefono, "");
+        puntos=0;
     }
 
     Cliente(int i, const char n[], const char d[], const char t[]){
@@ -23,6 +25,7 @@ public:
         strcpy(nombre, n);
         strcpy(direccion, d);
         strcpy(telefono, t);
+        puntos=0;
     }
 
     Cliente(const Cliente& c){
@@ -46,41 +49,17 @@ public:
     void setNombre(const char n[]){ strcpy(nombre, n); }
     void setDireccion(const char d[]){ strcpy(direccion, d); }
     void setTelefono(const char t[]){ strcpy(telefono, t); }
-
+    void setPuntos(int p) { puntos=p;}
     // Getters
     int getId() const{ return id; }
     char* getNombre(){ return nombre; }
     char* getDireccion(){ return direccion; }
     char* getTelefono(){ return telefono; }
+    void agregarPuntos(int p){puntos +=p;}
 
-    virtual void mostrarCliente() { //metodo virtual para polimorfismo
-        cout << "ID: " << id << "\nNombre: " << nombre << "\nDireccion: " << direccion << "\nTelefono: " << telefono << endl;
-    }
-};
-
-class ClienteFrecuente : public Cliente {
-    int puntosAcumulados;
-public:
-    ClienteFrecuente() : Cliente() {
-        puntosAcumulados=0;
-    }
-
-    ClienteFrecuente(int i, const char n[], const char d[], const char t[], int puntos) 
-        : Cliente(i, n, d, t) {
-        puntosAcumulados=puntos;
-    }
-
-    void setPuntosAcumulados(int puntos) {
-        puntosAcumulados= puntos;
-    }
-
-    int getPuntosAcumulados() const {
-        return puntosAcumulados;
-    }
-
-    void mostrarCliente() override { //Ejemplo de polimorfismo
-        Cliente::mostrarCliente();
-        cout<<"Puntos Acumulados: "<< puntosAcumulados << endl;
+   void mostrarCliente() { //metodo virtual para polimorfismo
+        cout << "ID: " << id << "\nNombre: " << nombre << "\nDireccion: " << direccion << "\nTelefono: " << telefono << "\npuntos: "<<puntos<<endl;
+        if (puntos>=50) cout<<"--------Cliente frecuente--------\n";
     }
 };
 
@@ -93,6 +72,7 @@ public:
     int buscarCliente(int id);
     int contarClientes();
     void modificarCliente(int id);
+    void sumarPuntos(int idCliente, float totalCompra);
 };
 
 void ArchivoClientes::agregarCliente(){
@@ -190,5 +170,23 @@ void ArchivoClientes::modificarCliente(int id){
         }
     }
     cout<<"Cliente con ID "<<id<<" no encontrado.\n";
+    archivo.close();
+}
+
+void ArchivoClientes::sumarPuntos(int idCliente, float totalCompra){
+    fstream archivo(nombreArchivo, ios::in | ios::out | ios::binary);
+    if(!archivo) return;
+
+    Cliente c;
+    while(archivo.read((char*)&c, sizeof(Cliente))){
+        if(c.getId() == idCliente){
+            int puntosGanados = totalCompra / 10; // 1 punto por cada 10pesos
+            c.agregarPuntos(puntosGanados);
+
+            archivo.seekp(-sizeof(Cliente), ios::cur);
+            archivo.write((char*)&c, sizeof(Cliente));
+            break;
+        }
+    }
     archivo.close();
 }

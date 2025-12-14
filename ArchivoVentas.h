@@ -106,6 +106,8 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
     return false;
     }
         venta.calcularTotales();
+        ArchivoClientes ac;
+        ac.sumarPuntos(id_cliente, venta.getTotal());
 
         ofstream archivo(nombreArchivo,ios::app|ios::binary);
         if(!archivo){
