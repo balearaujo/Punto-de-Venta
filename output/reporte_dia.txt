@@ -1,3 +1,10 @@
-REPORTE DE VENTAS DEL DIA 13/12/2025
+REPORTE DE VENTAS DEL DIA 14/12/2025
 
-No hubo ventas este dia
+Folio: 1 Total: $38.976 Ganancia: $33.6
+Folio: 1 Total: $39.44 Ganancia: $34
+Folio: 1 Total: $51.04 Ganancia: $44
+Folio: 2 Total: $19.72 Ganancia: $17
+Folio: 3 Total: $31.32 Ganancia: $27
+
+TOTAL VENDIDO: $180.496
+GANANCIA TOTAL: $155.6

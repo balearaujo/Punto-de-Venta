@@ -6,8 +6,9 @@
 using namespace std;
 
 
-class Usuario {
+class Usuario { //clase de usuario
 protected:
+    //atributos
     int id;
     char nombre[50];
     char usuario[50];
@@ -16,6 +17,7 @@ protected:
     int activo;
 
 public:
+    //constructores
     Usuario() {
         id=0;
         nombre[0]='\0';
@@ -25,7 +27,7 @@ public:
         activo=1;
     }
 
-    void setDatos(int _id, const char n[], const char u[], const char c[],int t){
+    void setDatos(int _id, const char n[], const char u[], const char c[],int t){ //setter
     id= _id;
     strcpy(nombre,n);
     strcpy(usuario, u);
@@ -33,18 +35,18 @@ public:
     tipo=t;
     activo=1;
     }
-
+    //getter
     int getId() const { return id; }
     const char* getNombre() const{ return nombre; }
     const char* getUsuario() const{ return usuario; }
     const char* getContrasenia()const{return contrasenia;}
     int getTipo()const{return tipo;}
     int estaActivo()const {return activo==1;}
-
+    //setters
     void setContrasena(const char* c) { strcpy(contrasenia, c); }
     void setActivo(int a){activo=a; }
 
-    void imprimir () const {
+    void imprimir () const { //impresion
         cout <<"\nID: "<<id
             <<"\nNombre: "<<nombre
             <<"\nUsuario: "<<usuario
@@ -54,14 +56,15 @@ public:
     }
 };
 
-class Administrador:public Usuario{
+//herencia multiple
+class Administrador:public Usuario{ //usuario de tipo administrador
     public: 
     Administrador(const Usuario& u){
         setDatos(u.getId(), u.getNombre(), u.getUsuario(), u.getContrasenia(), 1);
     }
 };
 
-class Cajero:public Usuario{
+class Cajero:public Usuario{ //usuario de tipo cajero
     public: 
     Cajero(const Usuario& u){
         setDatos(u.getId(), u.getNombre(), u.getUsuario(), u.getContrasenia(), 2);

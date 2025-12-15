@@ -11,11 +11,12 @@
 using namespace std;
 
 
-class ArchivoVentas {
-private:
+class ArchivoVentas { //clase de ventas
+private: //archivo
     const char* nombreArchivo = "ventas.dat";
 
 public:
+//metodos
     void CrearArchivo();
     bool registrarVenta(ArchivoProductos &ap,int id_cliente);
     void mostrarVentas();
@@ -36,29 +37,29 @@ public:
 };
 
 
-void ArchivoVentas::CrearArchivo() {
+void ArchivoVentas::CrearArchivo() { //crea archivo
     fstream archivo(nombreArchivo, ios::app | ios::binary);
     if (!archivo) cout << "No se pudo crear el archivo.\n";
     archivo.close();
 }
 
-bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
+bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){ //registra la venta
     Venta venta;           
-    venta.generarFolio();
-    venta.generarFechaHora();
-    venta.setCliente(id_cliente);
+    venta.generarFolio(); //genera folio
+    venta.generarFechaHora(); //genera hora
+    venta.setCliente(id_cliente); //insserta cliente
     
     int codigo, cantidad;
     char continuar = 's';
 
-    while (continuar == 's' || continuar == 'S') {
+    while (continuar == 's' || continuar == 'S') { //ciclo para sumar ventas
         cout << "\nCodigo del producto: ";
-        cin >> codigo;
+        cin >> codigo; //ingresa codigo
 
         Varitas p;
         long pos;
 
-        if (!ap.obtenerProducto(codigo, p, pos)) {
+        if (!ap.obtenerProducto(codigo, p, pos)) { //busca producto
             cout << "ERROR: Producto no encontrado\n";
             return false;
         }
@@ -66,19 +67,19 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
         cout<< "Cantidad: ";
         cin>> cantidad;
 
-        if (cantidad <= 0) {
+        if (cantidad <= 0) { //valida que la venta sea posible
             cout << "Cantidad invalida\n";
             return false;
         }
 
-        if (cantidad > p.getExistencia()) {
+        if (cantidad > p.getExistencia()) { //verifica que haya suficiente stock
             cout << "ERROR: el Stock es insuficiente\n";
             return false;
         }
-
+        //agrega los detalles
         venta.agregarDetalle(p.getCodigo(),p.getNombre(),p.getPrecio(), p.getCosto(), cantidad, id_cliente);
         
-        p.setExistencia(p.getExistencia()-cantidad);
+        p.setExistencia(p.getExistencia()-cantidad); //actualiza existencia
         
         fstream prod("productos.dat", ios::in| ios::out| ios::binary);
         prod.seekp(pos);
@@ -89,15 +90,16 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
         cin>>continuar;
     }
 
-    if (venta.getNumDetalles() == 0) {
+    if (venta.getNumDetalles() == 0) { 
         cout << "Venta cancelada, no se agregaron productos\n";
         return false;
     }
+        //pide metodo de pago
         cout << "\nMetodo de pago (1 = Efectivo, 2 = Tarjeta): ";
         int metodo;
         cin >> metodo;
 
-    if (metodo == 1)
+    if (metodo == 1) //inserta dependiendo de la 
         venta.setMetodoPago("Efectivo");
     else if (metodo == 2)
         venta.setMetodoPago("Tarjeta");
@@ -107,7 +109,7 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
     }
         venta.calcularTotales();
         ArchivoClientes ac;
-        ac.sumarPuntos(id_cliente, venta.getTotal());
+        ac.sumarPuntos(id_cliente, venta.getTotal()); //suma  puntos
 
         ofstream archivo(nombreArchivo,ios::app|ios::binary);
         if(!archivo){
@@ -123,7 +125,7 @@ bool ArchivoVentas::registrarVenta(ArchivoProductos &ap, int id_cliente){
 }
     
 
-void ArchivoVentas::mostrarVentas() {
+void ArchivoVentas::mostrarVentas() { //muesta las ventas
     ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo) {
         cout << "No se pudo abrir ventas.dat\n";
@@ -131,13 +133,13 @@ void ArchivoVentas::mostrarVentas() {
     }
 
     Venta venta;
-    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) {
-        venta.imprimirTicket();
+    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) { //recorre archivo
+        venta.imprimirTicket(); //imprime
     }
 }
 
 
-void ArchivoVentas::mostrarVentasCliente(int id_cliente) {
+void ArchivoVentas::mostrarVentasCliente(int id_cliente) { //muetsra venta
     ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo) {
         cout << "No se pudo abrir ventas.dat\n";
@@ -148,11 +150,11 @@ void ArchivoVentas::mostrarVentasCliente(int id_cliente) {
     bool compro = false;
     int total=0;
 
-    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) {
-        if(venta.getCliente()!=id_cliente)continue;
+    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) { //recorre archivo
+        if(venta.getCliente()!=id_cliente)continue; //compara cliente
         compro = true;
         total += venta.getTotal();
-        venta.imprimirTicket();
+        venta.imprimirTicket(); //imprime su tickry
     }
     if(compro == false){
         cout << "El cliente no ha registrado ninguna venta\n";
@@ -161,15 +163,15 @@ void ArchivoVentas::mostrarVentasCliente(int id_cliente) {
     }
 }
 
-bool ArchivoVentas::buscarVenta(int folio) {
+bool ArchivoVentas::buscarVenta(int folio) { //busca venta por folio
     ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo) return false;
 
     Venta venta;
-    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) {
+    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) { //recorre archivo
         if (venta.getFolio() == folio) {
             cout << "\n=== VENTA ENCONTRADA ===\n";
-            venta.imprimirTicket();
+            venta.imprimirTicket(); //imprime el ticket
             archivo.close();
             return true;
         }
@@ -195,9 +197,10 @@ void ArchivoVentas::reportePorDia(const char* dia) {
 
     cout << "\n=== REPORTE DE VENTAS DEL DIA " << dia << " ===\n";
 
-    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) {
-        if (strcmp(venta.getFecha(), dia) == 0) {
-            venta.imprimirTicket();
+    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) { //recorre el archivo
+        if (strcmp(venta.getFecha(), dia) == 0) { //busca por fecha
+            venta.imprimirTicket(); //imprime los tickets
+            //calcula totales
             totalDia += venta.getTotal();
             gananciaDia+=venta.getTotal();
             cantidadProductos += venta.getCantidadTotalProductos();
@@ -215,7 +218,7 @@ void ArchivoVentas::reportePorDia(const char* dia) {
         archivo.close();
 }
 
-void ArchivoVentas::reportePorDiaTxt(const char *dia){
+void ArchivoVentas::reportePorDiaTxt(const char *dia){ //reporte por dia
     ifstream archivo(nombreArchivo, ios::binary);
     ofstream txt("reporte_dia.txt");
 
@@ -230,9 +233,10 @@ void ArchivoVentas::reportePorDiaTxt(const char *dia){
 
     txt << "REPORTE DE VENTAS DEL DIA " << dia << "\n\n";
 
-    while(archivo.read((char*)&venta, sizeof(Venta))){
-        if(strcmp(venta.getFecha(), dia) == 0){
+    while(archivo.read((char*)&venta, sizeof(Venta))){ //recorre archivo
+        if(strcmp(venta.getFecha(), dia) == 0){ //compara por dia
             hay = true;
+            //IMPRIME
             txt << "Folio: " << venta.getFolio()
                 << " Total: $" << venta.getTotal()
                 << " Ganancia: $" << venta.getGanancia() << "\n";
@@ -255,7 +259,7 @@ void ArchivoVentas::reportePorDiaTxt(const char *dia){
 }
 
 
-void ArchivoVentas::reportePorProducto(int codigo) {
+void ArchivoVentas::reportePorProducto(int codigo) { //reporte por producto
     ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo) {
         cout << "No se pudo abrir ventas.dat\n";
@@ -268,24 +272,25 @@ void ArchivoVentas::reportePorProducto(int codigo) {
 
     cout << "\n=== REPORTE DEL PRODUCTO " << codigo << " ===\n";
 
-    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) {
+    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) { //recorre el archivo
         DetalleVenta* d = venta.getDetalles();
-        for (int i = 0; i < venta.getNumDetalles(); i++) {
+        for (int i = 0; i < venta.getNumDetalles(); i++) { //obtiene los detalles
             if (d[i].getCodigo() == codigo) {
+                //calcula totales
                 d[i].imprimir();
                 totalCantidad += d[i].getCantidad();
                 totalDinero += d[i].getSubtotal();
             }
         }
     }
-
+    //imprime totales
     cout << "\nTOTAL UNIDADES VENDIDAS: " << totalCantidad;
     cout << "\nTOTAL GENERADO: $" << totalDinero << "\n";
 
     archivo.close();
 }
 
-void ArchivoVentas::reporteTotales() {
+void ArchivoVentas::reporteTotales() { //reportes totales
     ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo) {
         cout << "No se pudo abrir ventas.dat\n";
@@ -297,7 +302,8 @@ void ArchivoVentas::reporteTotales() {
 
     cout << "\n=== REPORTE GENERAL DE VENTAS ===\n";
 
-    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) {
+    while (archivo.read(reinterpret_cast<char*>(&venta), sizeof(Venta))) { //recorre el archivo
+        //calcula el total de todo
         venta.imprimirTicket();
         totalGeneral += venta.getTotal();
     }
@@ -307,7 +313,7 @@ void ArchivoVentas::reporteTotales() {
     archivo.close();
 }
 
-bool ArchivoVentas::consultarPorFecha(const char* fechaBuscada) {
+bool ArchivoVentas::consultarPorFecha(const char* fechaBuscada) { //busca ventas por fecga
     ifstream archivo(nombreArchivo, ios::binary);
     if (!archivo) {
         cout << "No se pudo abrir el archivo de ventas.\n";
@@ -317,10 +323,11 @@ bool ArchivoVentas::consultarPorFecha(const char* fechaBuscada) {
     Venta v;
     bool encontrado = false;
 
-    while (archivo.read((char*)&v, sizeof(Venta))) {
+    while (archivo.read((char*)&v, sizeof(Venta))) { //recorre archivo
 
-        if (strcmp(v.getFecha(), fechaBuscada) == 0) {
+        if (strcmp(v.getFecha(), fechaBuscada) == 0) { //compara con la fecha
 
+            //imprime los datos acorde a la fecha
             cout << "\n=== VENTA ENCONTRADA ===\n";
             cout << "Folio: " << v.getFolio() << endl;
             cout << "Total: $" << v.getTotal() << endl;
@@ -337,7 +344,7 @@ bool ArchivoVentas::consultarPorFecha(const char* fechaBuscada) {
     return encontrado;
 }
 
-void ArchivoVentas::corteDiario(const char* fecha){
+void ArchivoVentas::corteDiario(const char* fecha){ //realiza el corte diario
     ifstream ventas(nombreArchivo, ios::binary);
 
     if (!ventas) {
@@ -349,7 +356,7 @@ void ArchivoVentas::corteDiario(const char* fecha){
 
     while (ventas.read((char*)&v, sizeof(Venta))) {
         if (strcmp(v.getFecha(), fecha) == 0) {
-            ingresos += v.getTotal();
+            ingresos += v.getTotal(); //obtiene ingresos
         }
     }
     ventas.close();
@@ -358,7 +365,7 @@ void ArchivoVentas::corteDiario(const char* fecha){
     gastos=ArchGas.totalGastosPorDia(fecha);
 
     dinero=ingresos-gastos;
-
+    //imprime el corte
     ofstream txt("corte_diario.txt");
     txt << "===== CORTE DIARIO =====\n";
     txt << "Fecha: " << fecha << "\n\n";
@@ -374,7 +381,7 @@ void ArchivoVentas::corteDiario(const char* fecha){
     cout << "Saldo: $" << dinero << endl;
 }
 
-void ArchivoVentas::HistorialClienteTxt() {
+void ArchivoVentas::HistorialClienteTxt() { //imprime el historial en texto
         ifstream ventas(nombreArchivo, ios::binary);
         ofstream txt("historial_clientes.txt");
 
@@ -390,15 +397,15 @@ void ArchivoVentas::HistorialClienteTxt() {
             int compras;
         };
 
-        Historial hist[100];
+        Historial hist[100]; //historial
         int n = 0;
 
         Venta v;
 
-        while (ventas.read((char*)&v, sizeof(Venta))) {
+        while (ventas.read((char*)&v, sizeof(Venta))) { //recorre archivo
             int id = v.getCliente();
             bool encontrado = false;
-
+            //calcula por compras
             for (int i = 0; i < n; i++) {
                 if (hist[i].id == id) {
                     hist[i].total += v.getTotal();
@@ -431,16 +438,16 @@ void ArchivoVentas::HistorialClienteTxt() {
         cout << "Historial de clientes exportado a historial_clientes.txt\n";
     }
 
-void ArchivoVentas::Top10productos() {
+void ArchivoVentas::Top10productos() {//hace el top de productos
     ifstream ventas(nombreArchivo, ios::binary);
-    ofstream txt("top10_productos.txt");
+    ofstream txt("top10_productos.txt"); //archivo texto
 
     if (!ventas || !txt) {
         cout << "Error al abrir archivos\n";
         return;
     }
 
-    struct Top {
+    struct Top { //estructura del top
         int codigo;
         char nombre[50];
         int cantidad;
@@ -454,7 +461,7 @@ void ArchivoVentas::Top10productos() {
 
     while (ventas.read((char*)&v, sizeof(Venta))) {
         DetalleVenta* d = v.getDetalles();
-
+        //calculo del top
         for (int i = 0; i < v.getNumDetalles(); i++) {
             int cod = d[i].getCodigo();
             bool existe = false;
@@ -479,7 +486,7 @@ void ArchivoVentas::Top10productos() {
     }
 
     for (int i = 0; i < n - 1; i++) {
-        for (int j = i + 1; j < n; j++) {
+        for (int j = i + 1; j < n; j++) { //metodo de la burbuja para el orden
             if (lista[j].cantidad > lista[i].cantidad) {
                 Top temp = lista[i];
                 lista[i] = lista[j];
@@ -492,7 +499,7 @@ void ArchivoVentas::Top10productos() {
 
     int limite = (n < 10) ? n : 10;
 
-    for (int i = 0; i < limite; i++) {
+    for (int i = 0; i < limite; i++) { //imprime el top
         txt << i + 1 << ") Codigo: " << lista[i].codigo << " | "
             << lista[i].nombre << "\n";
         txt << "Cantidad vendida: " << lista[i].cantidad << "\n";
@@ -506,6 +513,7 @@ void ArchivoVentas::Top10productos() {
     cout << "Top 10 generado correctamente\n";
 }
 
+//revisa historial por usuario
 void ArchivoVentas:: historialPorUsuarioSemana(int idUsuario, const char fechaInicio[],const char fechaFin[]){
     ifstream in (nombreArchivo, ios::binary);
     Venta v;
@@ -513,7 +521,7 @@ void ArchivoVentas:: historialPorUsuarioSemana(int idUsuario, const char fechaIn
     while (in.read((char*)&v, sizeof(Venta))){
         if (v.getUsuario()==idUsuario &&
             strcmp(v.getFecha(), fechaInicio)>=0 &&
-            strcmp(v.getFecha(), fechaFin)<=0){
+            strcmp(v.getFecha(), fechaFin)<=0){  //revisa las fechas y que sea el mismo usuario
                 cout<<"\n==============================\n";
                 cout<<"Folio: "<<v.getFolio()<<endl;
                 cout<<"Fecha: "<<v.getFecha()<<endl;
@@ -522,7 +530,7 @@ void ArchivoVentas:: historialPorUsuarioSemana(int idUsuario, const char fechaIn
                 cout<<"Productos:\n";
 
                 for(int i=0; i<v.getNumDetalles(); i++){
-                    v.getDetalles()[i].imprimir();
+                    v.getDetalles()[i].imprimir(); //imprime
                 }
                 cout<<"Total: $"<<v.getTotal()<<endl;
             }
@@ -530,6 +538,7 @@ void ArchivoVentas:: historialPorUsuarioSemana(int idUsuario, const char fechaIn
         in.close();
 }
 
+//regista las ventas pendientes
 void ArchivoVentas::registrarVentaPendiente(ArchivoProductos& ap,
                                             VentaPendiente& vp,
                                             int idCliente) {
@@ -548,7 +557,7 @@ void ArchivoVentas::registrarVentaPendiente(ArchivoProductos& ap,
     cout << "Cantidad: ";
     cin >> cantidad;
 
-    if (cantidad <= 0 || cantidad > p.getExistencia()) {
+    if (cantidad <= 0 || cantidad > p.getExistencia()) { //revisa existencia
         cout << "Cantidad invalida o stock insuficiente\n";
         return;
     }
@@ -564,7 +573,7 @@ void ArchivoVentas::registrarVentaPendiente(ArchivoProductos& ap,
     );
 }
 
-void ArchivoVentas::movimientosCaja(const char* fecha) {
+void ArchivoVentas::movimientosCaja(const char* fecha) { //movimientos de caja
     ifstream ventas("ventas.dat", ios::binary);
     ifstream gastos("gastos.dat", ios::binary);
     ofstream txt("movimientos_caja.txt");

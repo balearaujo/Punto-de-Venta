@@ -3,12 +3,13 @@
 #include <fstream>
 using namespace std;
 
-class Categoria {
+class Categoria { //clase de categoria
 private:
     int id;
     char nombre[30];
 
 public:
+//consturctores
     Categoria(){
         id=0;
         nombre[0]='\0';
@@ -44,14 +45,15 @@ public:
 
 class ArchivoCategorias{
 private:
-    const char* nombreArchivo = "categorias.dat";
+    const char* nombreArchivo = "categorias.dat"; //archivo
 
     public:
+    //metodos
     void agregarCategoria();
     void mostrarCategorias();
 };
 
-void ArchivoCategorias::agregarCategoria(){
+void ArchivoCategorias::agregarCategoria(){ //agrega categoria
     ofstream archivo(nombreArchivo, ios::app | ios::binary);
     if(!archivo){
         cout<<"No se puede abrir el archivo.\n";
@@ -67,14 +69,14 @@ void ArchivoCategorias::agregarCategoria(){
         char nombre[30];
         cout<<"Nombre: "; cin.ignore(); cin.getline(nombre,30); c.setNombre(nombre);
 
-        archivo.write(reinterpret_cast<char*>(&c), sizeof(Categoria));
+        archivo.write(reinterpret_cast<char*>(&c), sizeof(Categoria)); //escribe los datos
         cout<<"\nCategoria agregada.\n";
         cout<<"\nNuevo ID (-1 para terminar): "; cin>>id;
     }
     archivo.close();
 }
 
-void ArchivoCategorias::mostrarCategorias(){
+void ArchivoCategorias::mostrarCategorias(){ //muestra los datos
     ifstream archivo(nombreArchivo, ios::binary);
     if(!archivo){
         cout<<"No se pudo abrir el archivo.\n";
@@ -82,7 +84,7 @@ void ArchivoCategorias::mostrarCategorias(){
     }
 
     Categoria c;
-    while(archivo.read(reinterpret_cast<char*>(&c), sizeof(Categoria))){
+    while(archivo.read(reinterpret_cast<char*>(&c), sizeof(Categoria))){ //lee los datos
         cout<<c<<endl;
     }
 

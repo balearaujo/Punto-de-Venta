@@ -6,18 +6,18 @@
 #include <cstring>
 using namespace std;
 
-class Varitas : public Producto {
-private:
+class Varitas : public Producto { //clase varitas heredada de producto
+private: //especificaciones
     char categoria[30];
     int idProveedor;
     float costo;
 
 public:
-    Varitas() : Producto(), idProveedor(0), costo(0) {
+    Varitas() : Producto(), idProveedor(0), costo(0) { //constructor
         categoria[0] = '\0';
     }
 
-    Varitas(int c, const char n[], float p, float cost, int e, const char cat[], int prov)
+    Varitas(int c, const char n[], float p, float cost, int e, const char cat[], int prov) //constructor con parametros
         : Producto(c, n, p, e), idProveedor(prov), costo(cost) {
         strcpy(categoria, cat);
     }

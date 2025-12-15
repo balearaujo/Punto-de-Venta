@@ -5,24 +5,24 @@
 using namespace std;
 
 
-class VentaPendiente : public Venta {
+class VentaPendiente : public Venta { //clase heredada de venta
 private:
-    bool confirmada;
+    bool confirmada; //atributo
 
 public:
-    VentaPendiente() : Venta() {
+    VentaPendiente() : Venta() { //constructor
         confirmada = false;
     }
 
     void confirmar() {
-        confirmada = true;
+        confirmada = true; //revisa que este confirmada
     }
 
     bool estaConfirmada() const {
         return confirmada;
     }
 
-    void mostrarResumen() const {
+    void mostrarResumen() const { //muestra el resumen
         cout << "\n--- VENTA PENDIENTE ---\n";
         cout << "Cliente ID: " << getCliente() << endl;
         cout << "Productos: " << getCantidadTotalProductos() << endl;

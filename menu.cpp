@@ -12,6 +12,7 @@
 #include "VentaPendiente.h"
 using namespace std;
 
+//archivos
 ArchivoProductos archivo;
 ArchivoProveedores ArchivoProv;
 ArchivoClientes archivoClientes;
@@ -19,6 +20,7 @@ ArchivoVentas ArchVentas;
 ArchivoUsuarios archivoUsuarios;
 ArchivoGastos ArchGas;
 
+//funciones
 void menu();
 void ayuda();
 void VentasMenu(); 
@@ -34,23 +36,23 @@ void ConsultasMenu();
 void AdministacionMenu();
 
 
-Usuario* u = nullptr;
-Carrito* carrito = nullptr;
-bool esAdmin=false;
+Usuario* u = nullptr; //puntero a usuario
+Carrito* carrito = nullptr; //puntero a carrito
+bool esAdmin=false; //booleano si usuario es admin
 
-void titulo(const char* t){
+void titulo(const char* t){ //impresion de titulo bonito
     system("cls");
     cout << "====================================\n";
     cout << " " << t << "\n";
     cout << "====================================\n";
 }
 
-void pausa(){
+void pausa(){ //pausa antes de borrar
     cout << "\n";
     system("pause");
 }
 
-int leerEnteroSeguro(){
+int leerEnteroSeguro(){ //validación
     int x;
     while(!(cin >> x)){
         cin.clear();
@@ -60,7 +62,7 @@ int leerEnteroSeguro(){
     return x;
 }
 
-float leerFloatSeguro(){
+float leerFloatSeguro(){ //validacion
     float x;
     while(!(cin >> x)){
         cin.clear();
@@ -70,7 +72,7 @@ float leerFloatSeguro(){
     return x;
 }
 
-char leerCharSN(){
+char leerCharSN(){ //validacion
     char c;
     cin >> c;
     while(c!='s' && c!='S' && c!='n' && c!='N'){
@@ -82,6 +84,7 @@ char leerCharSN(){
 
 
 int main() {
+    //creacion de los archivos
     archivo.CrearArchivo();
     ArchivoProv.crearArchivo();
     ArchVentas.CrearArchivo();
@@ -95,7 +98,7 @@ int main() {
         cout << "2. Registrar nuevo usuario\n";
         cout << "> ";
         cin >> tipo;
-
+        //opciones de registro
         if(tipo == 2){
             archivoUsuarios.agregarUsuario();
             cout << "\nUsuario registrado\n";
@@ -110,7 +113,7 @@ int main() {
 
     titulo("INICIO DE SESION");
     do {
-        u = archivoUsuarios.login();
+        u = archivoUsuarios.login(); //guarda el login
 
         if (u == nullptr) {
             cout << "\nDatos incorrectos\n";
@@ -121,13 +124,13 @@ int main() {
     } while (u == nullptr);
 
     
-    esAdmin = (u->getTipo() == 1);
+    esAdmin = (u->getTipo() == 1); //guarda si el usuario es administrador
     carrito = new Carrito(u->getId());
 
 
     titulo("BIENVENIDO");
-    cout << "Usuario: " << u->getNombre() << endl;
-    cout << "Tipo: " << (esAdmin ? "Administrador" : "Cajero") << endl;
+    cout << "Usuario: " << u->getNombre() << endl; //obtiene el nombre
+    cout << "Tipo: " << (esAdmin ? "Administrador" : "Cajero") << endl; //imprime el rol
     pausa();
 
     menu();
@@ -137,12 +140,12 @@ int main() {
 
 
 void menu(){
-    int opcion;
+    int opcion; //opciones principales
     do{
         titulo("MENU PRINCIPAL");
         cout<<"1. Ventas\n";
         cout<<"2. Producto\n";
-        if (esAdmin){
+        if (esAdmin){ //opciones solo visibles para admin
         cout<<"3. Cliente\n";
         cout<<"4. Proveedores\n";
         cout<<"5. Usuarios\n";
@@ -153,12 +156,12 @@ void menu(){
         }
         cout<<"9. Ayuda\n";
         cout<<"0. Salir\n";
-        cout<<"> "; opcion = leerEnteroSeguro();
+        cout<<"> "; opcion = leerEnteroSeguro(); //validacion
 
-        switch(opcion){
+        switch(opcion){ //aqui llama otros menus
             case 1: VentasMenu(); break;
             case 2: ProductosMenu(); break;
-            case 3: 
+            case 3: //aqui llama a menus solo accesibles para administradores
             if (!esAdmin) {cout<<"Acceso denegado"; pausa(); break;}
             ClienteMenu(); break;
             case 4: 
@@ -187,13 +190,13 @@ void menu(){
     }while (opcion!=0);
 }
 
-void VentasMenu(){
+void VentasMenu(){ //realizacion de ventas
     int opcion;
 
     do{
         titulo("MENU DE VENTAS");
         cout<<"\n1. Realizar ventas\n";
-        cout<<"2. Opciones de carrito\n";
+        cout<<"2. Opciones de carrito\n"; //llama a opciones de ventas simultaneas
         cout<<"0. Regresar a menu principal\n";
         cout<<"> "; opcion = leerEnteroSeguro();
 
@@ -207,9 +210,9 @@ void VentasMenu(){
                 cout << "ID del cliente:\n";
                 id_cliente=leerEnteroSeguro();
 
-                if(archivoClientes.buscarCliente(id_cliente)!=1){
+                if(archivoClientes.buscarCliente(id_cliente)!=1){ //revisa si el cliente ya esta registrado
                     cout << "Cliente no registrado\n";
-                    archivoClientes.agregarCliente(); 
+                    archivoClientes.agregarCliente();  //se agrega cliente
                     pausa(); 
                 }
 
@@ -219,12 +222,12 @@ void VentasMenu(){
                     cout << "¿Vender otro producto? (s/n): ";
                     continuar = leerCharSN();
 
-                } while (continuar == 's' || continuar == 'S');
+                } while (continuar == 's' || continuar == 'S'); //condicion para vender otro
 
                 Venta vf;
-                vf.generarFechaHora();
-                vf.calcularTotales();
-                vf.imprimirTicket();
+                vf.generarFechaHora(); //genera hora
+                vf.calcularTotales(); //calcula totales
+                vf.imprimirTicket(); //imprime tickets
             } pausa(); break;
             
             case 2: OpcionesdeCarrito(); break;
@@ -235,7 +238,7 @@ void VentasMenu(){
     }while (opcion!=0);
 }
 
-void OpcionesdeCarrito(){
+void OpcionesdeCarrito(){ //opciones para venta simultanea
     int opcion;
     do{
         titulo("OPCIONES DE CARRITO");
@@ -251,15 +254,15 @@ void OpcionesdeCarrito(){
                 cout << "ID del cliente:\n";
                 id_cliente=leerEnteroSeguro();
 
-                if (archivoClientes.buscarCliente(id_cliente) != 1) {
-                    cout << "Cliente no registrado\n";
+                if (archivoClientes.buscarCliente(id_cliente) != 1) { //pregunta si el cliente esta registrado
+                    cout << "Cliente no registrado\n"; //si el cliente no esta registado lo agrefa
                     archivoClientes.agregarCliente(); pausa();
                 }
 
-                VentaPendiente vp;
-                vp.generarFolio();
-                vp.generarFechaHora();
-                vp.setUsuario(u->getId());
+                VentaPendiente vp; //entra a venta pendiente
+                vp.generarFolio(); //genera folio
+                vp.generarFechaHora(); //genera fecha
+                vp.setUsuario(u->getId()); //guarda usuario
 
                 char continuar;
                 do {
@@ -268,16 +271,16 @@ void OpcionesdeCarrito(){
                     continuar = leerCharSN();
                 } while (continuar == 's' || continuar == 'S');
 
-                vp.calcularTotales();
-                carrito->agregarVenta(vp);
+                vp.calcularTotales();//calcula el total
+                carrito->agregarVenta(vp); //se agrefa la venta al carrito
 
                 cout << "Venta agregada al carrito correctamente.\n";
                 } pausa(); break;
 
             case 2: 
-                carrito->mostrarCarrito();pausa(); break; 
+                carrito->mostrarCarrito();pausa(); break; //se muestra el carrito
             case 3:
-                carrito->confirmarTodas(ArchVentas);pausa(); break; 
+                carrito->confirmarTodas(ArchVentas);pausa(); break; //confirma las venta
             case 0: return;
             default: cout<<"Opcion invalida"; break;
             
@@ -285,11 +288,11 @@ void OpcionesdeCarrito(){
 
     }while (opcion!=0);
 }
-void ProductosMenu(){
+void ProductosMenu(){ //menu con opciones para los productos
     int opcion;
 
     do{
-        titulo("MENU PRODUCTOS");
+        titulo("MENU PRODUCTOS"); //llamada a titulo bonito
         cout << "\n1. Mostrar productos\n";
         cout << "2. Buscar producto\n";
         if (esAdmin){
@@ -298,18 +301,18 @@ void ProductosMenu(){
         cout << "5. Eliminar producto\n";
         }
         cout<<"0. Regresar\n";
-        cout<<"> "; opcion = leerEnteroSeguro();
+        cout<<"> "; opcion = leerEnteroSeguro(); //validacion de entero
 
         switch(opcion){
             case 1:
-                archivo.mostrarProductos(); pausa();
+                archivo.mostrarProductos(); pausa(); //muestra producto
                 break;
 
             case 2: {
                 int c;
                 cout << "Codigo del producto: ";
-                c=leerEnteroSeguro();
-                archivo.buscarProducto(c); pausa();
+                c=leerEnteroSeguro(); //las entradas tienen validacion
+                archivo.buscarProducto(c); pausa(); //busca producto
             } break;
 
             case 3:
@@ -327,7 +330,7 @@ void ProductosMenu(){
                 if (!esAdmin) {cout<<"Acceso denegado"; pausa(); break;}
                 int c;
                 cout << "Codigo del producto: "; c=leerEnteroSeguro();
-                archivo.eliminarProducto(c); pausa();
+                archivo.eliminarProducto(c); pausa(); //elimina
                 }
                 break;
             case 0: return;
@@ -338,7 +341,7 @@ void ProductosMenu(){
     }while (opcion!=0);
 }
 
-void Modificador(){
+void Modificador(){ //opciones para modificar producto
     int opcion;
 
     do{
@@ -354,15 +357,15 @@ void Modificador(){
                     int c;
                     cout << "Codigo del producto: ";
                     cin >> c;
-                    archivo.modificarProducto(c); pausa();
+                    archivo.modificarProducto(c); pausa(); //modifica el producto en precio y existencia
                 }
             break;
             
             case 2:
                 float porc;
                 cout<<"Porcentaje(+  aumenta, -disminuye): ";
-                porc = leerFloatSeguro();
-                archivo.ajustarPrecioPorcentaje(porc); pausa();
+                porc = leerFloatSeguro(); //valida el flotante
+                archivo.ajustarPrecioPorcentaje(porc); pausa(); //ajusta los precios
                 break;
             case 3: {
                 char cat[30];
@@ -371,9 +374,9 @@ void Modificador(){
                 cout<<"Categoria: ";
                 cin>>cat;
                 cout<<"Descuento de mayoreo (%): ";
-                desc = leerFloatSeguro();
+                desc = leerFloatSeguro(); //validacion de flotante
 
-                archivo.aplicarMayoreoCategoria(cat, desc); pausa();
+                archivo.aplicarMayoreoCategoria(cat, desc); pausa(); //aplica descuento a toda una categoria
                 break;
             }
             case 0: return;
@@ -383,7 +386,7 @@ void Modificador(){
     }while (opcion!=0);
 }
 
-void ClienteMenu(){
+void ClienteMenu(){ //opciones de manejo cliente
     int opcion;
 
     do{
@@ -394,15 +397,15 @@ void ClienteMenu(){
         cout << "4. Modificar Cliente\n";
         cout<<"5. Generar historial en .txt\n";
         cout<<"0. Regresar\n";
-        cout<<"> "; opcion = leerEnteroSeguro();
+        cout<<"> "; opcion = leerEnteroSeguro(); //lee  entero 
 
         switch(opcion){
             case 1:
-                archivoClientes.agregarCliente(); pausa();
+                archivoClientes.agregarCliente(); pausa(); //agrega cliente
                 break;
 
             case 2:
-                archivoClientes.mostrarClientes(); pausa();
+                archivoClientes.mostrarClientes(); pausa(); //muestra cliente
                 break;
 
             case 3:
@@ -410,7 +413,7 @@ void ClienteMenu(){
                     int id;
                     cout << "ID del cliente: ";
                     id = leerEnteroSeguro();
-                    archivoClientes.buscarCliente(id); pausa();
+                    archivoClientes.buscarCliente(id); pausa(); //busca cliente
                 }
                 break;
 
@@ -419,12 +422,12 @@ void ClienteMenu(){
                     int id;
                     cout << "ID del cliente a modificar: ";
                     id = leerEnteroSeguro();
-                    archivoClientes.modificarCliente(id); pausa();
+                    archivoClientes.modificarCliente(id); pausa(); //modifica cliente
                 }
                 break;
 
             case 5:
-                ArchVentas.HistorialClienteTxt(); pausa(); break; 
+                ArchVentas.HistorialClienteTxt(); pausa(); break; //muestra historial de cliente
 
             case 0: return;
             default: cout<<"Opcion invalida"; pausa();
@@ -433,7 +436,7 @@ void ClienteMenu(){
     }while (opcion!=0);
 }
 
-void ProveedoresMenu(){
+void ProveedoresMenu(){ //menu para manejo de proveedores
     int opcion;
 
     do{
@@ -446,14 +449,14 @@ void ProveedoresMenu(){
 
         switch(opcion){
             case 1:
-                ArchivoProv.mostrarProveedores(); pausa();
+                ArchivoProv.mostrarProveedores(); pausa(); //mostrar
                 break;
 
             case 2:
-                ArchivoProv.agregarProveedor(); pausa();
+                ArchivoProv.agregarProveedor(); pausa(); //agregar
                 break;
             case 3:
-                ArchVentas.HistorialClienteTxt(); pausa(); break;
+                ArchVentas.HistorialClienteTxt(); pausa(); break; //historial
             
             case 0: return;
             default: cout<<"Opcion invalida"; pausa();
@@ -461,7 +464,7 @@ void ProveedoresMenu(){
 
     }while (opcion!=0);
 }
-void UsuariosMenu(){
+void UsuariosMenu(){ //menu de para manejo de usuaurios
     int opcion;
 
     do{
@@ -470,14 +473,14 @@ void UsuariosMenu(){
         cout << "2. Agregar usuario\n";
         cout<<"3. Historial en .txt\n";
         cout<<"0. Regresar\n";
-        cout<<"> "; opcion = leerEnteroSeguro();
+        cout<<"> "; opcion = leerEnteroSeguro(); //validacion
 
         switch(opcion){
             case 1:
-                archivoUsuarios.mostrarUsuarios(); pausa();
+                archivoUsuarios.mostrarUsuarios(); pausa(); //muestra usuario
                 break;
             case 2:
-                archivoUsuarios.agregarUsuario(); pausa();
+                archivoUsuarios.agregarUsuario(); pausa(); //agrega
                 break;
             case 3:
                 int idUsuario;
@@ -486,13 +489,13 @@ void UsuariosMenu(){
                 cout << "ID del usuario: ";
                 idUsuario = leerEnteroSeguro();
 
-                cout << "Fecha inicio (YYYY-MM-DD): ";
+                cout << "Fecha inicio (DD-MM-YYYY): "; //fecha de inicio con su formato
                 cin >> fechaInicio;
 
-                cout << "Fecha fin (YYYY-MM-DD): ";
+                cout << "Fecha fin (DD-MM-AAAA): "; //fecha fin con formato
                 cin >> fechaFin;
 
-                ArchVentas.historialPorUsuarioSemana(idUsuario, fechaInicio, fechaFin); pausa(); break; 
+                ArchVentas.historialPorUsuarioSemana(idUsuario, fechaInicio, fechaFin); pausa(); break; //historial de usuario por semana
             case 0: return;
             default: cout<<"Opcion invalida"; pausa();
         }
@@ -500,7 +503,7 @@ void UsuariosMenu(){
     }while (opcion!=0);
 }
 
-void ReportesMenu(){
+void ReportesMenu(){ //opciones de reporte
     int opcion;
 
     do{
@@ -514,19 +517,19 @@ void ReportesMenu(){
 
         switch(opcion){
             case 1:
-            ArchVentas.reporteTotales(); pausa();
+            ArchVentas.reporteTotales(); pausa(); //reporte total
             break;
             case 2:
                 cout<<"Producto a buscar:";
                 int idP; cin>>idP;
-                ArchVentas.reportePorProducto(idP); pausa();
+                ArchVentas.reportePorProducto(idP); pausa(); //reporte por producto
                 break;
             case 3:
                 int idUsuario;
                 char fechaInicio[11], fechaFin[11];
 
                 cout << "ID del usuario: ";
-                idUsuario = leerEnteroSeguro();
+                idUsuario = leerEnteroSeguro(); //validacion
 
                 cout << "Fecha inicio (YYYY-MM-DD): ";
                 cin >> fechaInicio;
@@ -534,7 +537,7 @@ void ReportesMenu(){
                 cout << "Fecha fin (YYYY-MM-DD): ";
                 cin >> fechaFin;
 
-                ArchVentas.historialPorUsuarioSemana(idUsuario, fechaInicio, fechaFin); pausa(); break;
+                ArchVentas.historialPorUsuarioSemana(idUsuario, fechaInicio, fechaFin); pausa(); break; //por usuario
 
             case 4: Exportables(); break;
             case 0: return;
@@ -544,7 +547,7 @@ void ReportesMenu(){
     }while (opcion!=0);
 }
 
-void Exportables(){
+void Exportables(){ //exportables
     int opcion;
 
     do{
@@ -581,7 +584,7 @@ void Exportables(){
 
             case 6:
                 char fec[11]; cout<<"Ingresa la fecha para mostar los movimientos de caja: "; cin>>fec;
-                ArchVentas.movimientosCaja(fec); cout<<"Ahora visible en .txt";pausa(); break;
+                ArchVentas.movimientosCaja(fec); cout<<"Ahora visible en .txt";pausa(); break; //moviemientos de caja
             case 0: return;
             default: cout<<"Opcion invalida"; pausa();
         }
@@ -589,7 +592,7 @@ void Exportables(){
     }while (opcion!=0);
 }
 
-void ConsultasMenu(){
+void ConsultasMenu(){ //consultas por clasificacion
     int opcion;
     
     do{
@@ -622,12 +625,12 @@ void ConsultasMenu(){
                 cout << "ID del cliente:\n";
                 id_cliente = leerEnteroSeguro();
 
-                if(archivoClientes.buscarCliente(id_cliente)!=1){
+                if(archivoClientes.buscarCliente(id_cliente)!=1){ //revisar si el cliente esta registrado
                     cout << "No fue posible continuar el proceso por falta de un cliente\n"; pausa();
                     break;
                 }
 
-                ArchVentas.mostrarVentasCliente(id_cliente); pausa();
+                ArchVentas.mostrarVentasCliente(id_cliente); pausa(); //mostrar ventas
                 break; 
 
             case 0: return;
@@ -656,17 +659,17 @@ void AdministacionMenu(){
                 break;
 
             case 2:
-                ArchGas.registrarGasto(); pausa();
+                ArchGas.registrarGasto(); pausa(); //registrar gastos
                 break;
 
             case 3:
                 char corte[11]; cout<<"Fecha del corte: "; cin>>corte;
-                ArchVentas.corteDiario(corte); pausa();
+                ArchVentas.corteDiario(corte); pausa(); //corte diario
                 break;
             
             case 4:
                 char fec[11]; cout<<"Ingresa la fecha para mostar los movimientos de caja: "; cin>>fec;
-                ArchVentas.movimientosCaja(fec); cout<<"Ahora visible en .txt"; pausa(); break;
+                ArchVentas.movimientosCaja(fec); cout<<"Ahora visible en .txt"; pausa(); break; //movimientos de caja
             case 0: return;
             default: cout<<"Opcion invalida"; pausa();
         }
@@ -675,7 +678,7 @@ void AdministacionMenu(){
 }
 
 
-void ayuda(){
+void ayuda(){ //funcion de ayuda en texto
     titulo("AYUDA DEL SISTEMA");
 
     cout<<"Este sistema fue disenado para facilitar la administracion\n";

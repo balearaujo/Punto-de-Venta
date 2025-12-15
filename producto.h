@@ -7,12 +7,14 @@ using namespace std;
 
 class Producto {
 protected:
+    //atributos
     int codigo;
     char nombre[30];
     float precio;
     int existencia;
 
 public:
+    //constructores
     Producto() : codigo(0), precio(0.0), existencia(0) {
         nombre[0] = '\0';
     }
@@ -33,21 +35,21 @@ public:
     float getPrecio() const { return precio; }
     int getExistencia() const { return existencia; }
 
-    void actualizarCantidad(int cant) {
+    void actualizarCantidad(int cant) { //actualiza la cantidad
         if (cant <= existencia)
             existencia -= cant;
         else
             cout << "No hay suficiente inventario\n";
     }
 
-    void mostrar(ostream& out) const {
+    void mostrar(ostream& out) const { //muestra
         out << "Codigo: " << codigo
             << " | Nombre: " << nombre
             << " | Precio: $" << precio
             << " | Existencia: " << existencia;
     }
 
-    friend ostream& operator<<(ostream& out, const Producto& p) {
+    friend ostream& operator<<(ostream& out, const Producto& p) { //sobrecarga de operadores
         p.mostrar(out);
         return out;
     }

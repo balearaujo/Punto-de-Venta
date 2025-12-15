@@ -1,6 +1,10 @@
 ===== HISTORIAL DE CLIENTES =====
 
-Cliente ID: 33
-Compras realizadas: 1
-Total gastado: $38.28
+Cliente ID: 1
+Compras realizadas: 3
+Total gastado: $81.664
+------------------------------
+Cliente ID: 12
+Compras realizadas: 4
+Total gastado: $141.52
 ------------------------------

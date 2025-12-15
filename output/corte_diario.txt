@@ -1,7 +1,7 @@
 ===== CORTE DIARIO =====
-Fecha: 13/12/2025
+Fecha: 14/12/2025
 
-Ingresos por ventas: $38.28
-Gastos del dia: $23
+Ingresos por ventas: $180.496
+Gastos del dia: $0
 ----------------------------
-SALDO FINAL: $15.28
+SALDO FINAL: $180.496

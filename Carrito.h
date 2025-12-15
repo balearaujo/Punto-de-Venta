@@ -6,21 +6,22 @@
 using namespace std;
 
 
-class Carrito {
-private:
+class Carrito { //clase carrito
+private: //datos
     int idCarrito;
     VentaPendiente ventas[10];
     int numVentas;
 
-public:
-    Carrito(int id = 0) {
+public: 
+
+    Carrito(int id = 0) { //constructor
         idCarrito = id;
         numVentas = 0;
     }
 
-    int getId() const { return idCarrito; }
+    int getId() const { return idCarrito; } //getter
 
-    bool agregarVenta(const VentaPendiente& v) {
+    bool agregarVenta(const VentaPendiente& v) { //metodo para agregar venta
         if (numVentas >= 10) return false;
         ventas[numVentas++] = v;
         return true;
@@ -30,14 +31,14 @@ public:
         cout << "\n===== CARRITO #" << idCarrito << " =====\n";
         for (int i = 0; i < numVentas; i++) {
             cout << "\nVenta " << i + 1 << endl;
-            ventas[i].mostrarResumen();
+            ventas[i].mostrarResumen(); //imprime carrito
         }
     }
 
-    void confirmarTodas(ArchivoVentas& av) {
+    void confirmarTodas(ArchivoVentas& av) { //confirma las ventas
         ofstream archivo("ventas.dat", ios::app | ios::binary);
 
-        for (int i = 0; i < numVentas; i++) {
+        for (int i = 0; i < numVentas; i++) { //calcula totales
             ventas[i].calcularTotales();
             ventas[i].confirmar();
             ventas[i].guardarEnArchivo(archivo);
@@ -49,7 +50,7 @@ public:
         cout << "\nTodas las ventas del carrito fueron confirmadas.\n";
     }
 
-    bool estaVacio() const {
+    bool estaVacio() const { //revisa si esta vacio
         return numVentas == 0;
     }
 };

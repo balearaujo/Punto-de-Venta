@@ -7,8 +7,9 @@
 #include <cstring>
 using namespace std;
 
-class DetalleVenta {
+class DetalleVenta { //clase con los detalles de la venta
 private:
+    //atributo
     int codigo;
     char nombre[50];
     int cantidad;
@@ -17,6 +18,7 @@ private:
     float subtotal;
 
 public:
+    //cnstructores
     DetalleVenta() {
         codigo=0;
         nombre[0]='\0';
@@ -25,7 +27,7 @@ public:
         costo=0;
         subtotal = 0;
     }
-
+    //setters
     void setDatos(int c, const char n[],float p, float cost, int cant){
         codigo=c;
         strcpy(nombre,n);
@@ -34,7 +36,7 @@ public:
         cantidad=cant;
         subtotal=precio * cantidad;
     }
-
+    //getters
     int getCodigo() const {return codigo; }
     const char* getNombre() const {return nombre;}
     int getCantidad() const {return cantidad; }
@@ -43,7 +45,7 @@ public:
     float getCosto() const {return costo; }
     float getGanancia() const {return (precio-costo)*cantidad;}
     
-    void imprimir (){
+    void imprimir (){ //imprime
         cout<<codigo<< "|"
             <<nombre<< "| Cantidad: "<<cantidad
             <<"|$" <<precio<< "c/u | Subtotal: $" <<subtotal<<"\n";
@@ -51,8 +53,9 @@ public:
 };
 
 
-class Venta {
+class Venta { //clase venta
 private:
+    //atrbutos
     int folio;
     int id_cliente;
     int id_usuario;
@@ -70,6 +73,7 @@ private:
     char metodoPago[20];
 
 public:
+    //constructor
     Venta(){
         folio=0;
         id_cliente=0;
@@ -80,6 +84,7 @@ public:
         metodoPago[0]='\0';
     }
     public:
+    //metodos getters y setters
     void setCliente(int id) {id_cliente = id;}
     int getCliente() const {return id_cliente;}
 
@@ -89,7 +94,7 @@ public:
     const char* getHora()const{return hora;}
     DetalleVenta* getDetalles() {return detalles;}
     const char* getMetodoPago() const {return metodoPago;}
-
+    //metodos
     void generarFolio(){ folio=++ultimoFolio;}
     int getFolio()const{ return folio;}
     void setFolio(int f) { folio=f;}
@@ -126,32 +131,32 @@ public:
 
     bool agregarDetalle (int cod, const char nom[], float precio, float costo, int cant, int id_client){
         if(numDetalles >=50){ return false;}
-        if(cant<=0){ return false;}
+        if(cant<=0){ return false;} //valida cantidades
 
-        detalles[numDetalles].setDatos(cod, nom, precio, costo, cant);
-        numDetalles++;
+        detalles[numDetalles].setDatos(cod, nom, precio, costo, cant); //agrega los detalles
+        numDetalles++; //incrementa el numero de detalles
         id_cliente = id_client;
         return true;
     }
     
-    void calcularTotales() {
+    void calcularTotales() { //calcula los totales
         subtotal = 0;
         for(int i=0;  i<numDetalles; i++)
             subtotal += detalles[i].getSubtotal();
-        iva = subtotal * 0.16;
-        total = subtotal + iva;
+        iva = subtotal * 0.16; //agrega el 16 del iva
+        total = subtotal + iva; //agrega al total el iva
     }
     float getTotal() const { return total; }
     float getSubtotal() const { return subtotal; }
     int getNumDetalles() const { return numDetalles; } 
-    int getCantidadTotalProductos()const{
+    int getCantidadTotalProductos()const{ //cantidad total de productos los suma
         int totalCant=0;
         for (int i=0; i<numDetalles; i++)
-            totalCant += detalles[i].getCantidad();
+            totalCant += detalles[i].getCantidad(); //suma
         return totalCant;
     }
 
-    void imprimirTicket() {
+    void imprimirTicket() { //imprime el ticket
         cout << "\n=====================================\n";
         cout << "           TICKET DE COMPRA\n";
         cout << "=====================================\n";
@@ -169,7 +174,7 @@ public:
         cout << "=====================================\n\n";
     }
 
-    float getGanancia()const{
+    float getGanancia()const{//obtiene las ganacias
         float ganancia=0;
         for (int i=0; i<numDetalles; i++){
             ganancia+=detalles[i].getGanancia();
@@ -177,12 +182,12 @@ public:
         return ganancia;
     }
 
-    void guardarEnArchivo(ofstream &out) {
-        out.write((char*)this,sizeof(*this));
+    void guardarEnArchivo(ofstream &out) { //guarda em archivo
+        out.write((char*)this,sizeof(*this)); //escribe
     }
 
-    void leerDeArchivo(ifstream&in){
-        in.read((char*)this, sizeof(*this));
+    void leerDeArchivo(ifstream&in){ //lee en archivo
+        in.read((char*)this, sizeof(*this)); //escribe
     }
 };
 int Venta::ultimoFolio=0;

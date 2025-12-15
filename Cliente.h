@@ -3,8 +3,9 @@
 #include <fstream>
 using namespace std;
 
-class Cliente {
+class Cliente { //clase cliente
 private:
+    //atributos
     int id;
     char nombre[50];
     char direccion[100];
@@ -12,6 +13,7 @@ private:
     int puntos;
 
 public:
+    //constructores
     Cliente(){
         id=0;
         strcpy(nombre, "");
@@ -35,7 +37,7 @@ public:
         strcpy(telefono, c.telefono);
     }
 
-    void operator=(const Cliente& c){
+    void operator=(const Cliente& c){ //sonbrecarga de operadores
         if (this!=& c) {
             id=c.id;
             strcpy(nombre, c.nombre);
@@ -63,10 +65,11 @@ public:
     }
 };
 
-class ArchivoClientes {
+class ArchivoClientes { //clase de archivos
 private:
     const char* nombreArchivo="clientes.dat";
 public:
+    //metodos
     void agregarCliente();
     void mostrarClientes();
     int buscarCliente(int id);
@@ -75,7 +78,7 @@ public:
     void sumarPuntos(int idCliente, float totalCompra);
 };
 
-void ArchivoClientes::agregarCliente(){
+void ArchivoClientes::agregarCliente(){ //agrega cliente
     ofstream archivo(nombreArchivo, ios::app | ios::binary);
     if(!archivo){
         cout<<"No se puede abrir el archivo.\n";
@@ -85,6 +88,7 @@ void ArchivoClientes::agregarCliente(){
     cout<<"Ingresa el ID del cliente (-1 para terminar): ";
     int id; cin>>id;
     while(id!=-1){
+        //pide los datos
         c.setId(id);
         char nombre[50];
         cout<<"Nombre: "; cin.ignore(numeric_limits<streamsize>::max(), '\n'); cin.getline(nombre,50); c.setNombre(nombre);
@@ -92,36 +96,36 @@ void ArchivoClientes::agregarCliente(){
         cout<<"Direccion: "; cin.getline(direccion,100); c.setDireccion(direccion);
         char telefono[15];
         cout<<"Telefono: "; cin.getline(telefono,15); c.setTelefono(telefono);
-        archivo.write(reinterpret_cast<char*>(&c), sizeof(Cliente));
+        archivo.write(reinterpret_cast<char*>(&c), sizeof(Cliente)); //escribe en el archivo
         cout<<"\nCliente agregado.\n";
         cout<<"\nNuevo ID (-1 para terminar): "; cin>>id;
     }
     archivo.close();
 }
 
-void ArchivoClientes::mostrarClientes(){
+void ArchivoClientes::mostrarClientes(){ //muestra los clientes
     ifstream archivo(nombreArchivo, ios::binary);
     if(!archivo){
         cout<<"No se pudo abrir el archivo.\n";
         return;
     }
     Cliente c;
-    while(archivo.read(reinterpret_cast<char*>(&c), sizeof(Cliente))){
-        c.mostrarCliente();
+    while(archivo.read(reinterpret_cast<char*>(&c), sizeof(Cliente))){ //leee archivo
+        c.mostrarCliente(); //imprime
         cout << "-----------------------" << endl;
     }
     archivo.close();
 }
 
-int ArchivoClientes::buscarCliente(int id){
+int ArchivoClientes::buscarCliente(int id){ //busca cliente
     ifstream archivo(nombreArchivo, ios::binary);
     if(!archivo){
         cout<<"No se pudo abrir el archivo.\n";
         return -1;
     }
     Cliente c;
-    while(archivo.read(reinterpret_cast<char*>(&c), sizeof(Cliente))){
-        if(c.getId()==id){
+    while(archivo.read(reinterpret_cast<char*>(&c), sizeof(Cliente))){ //lee archivo
+        if(c.getId()==id){ //encuentra cliente
             cout<<"\n=== CLIENTE ENCONTRADO ===\n";
             c.mostrarCliente();
             archivo.close();
@@ -133,19 +137,19 @@ int ArchivoClientes::buscarCliente(int id){
     return 0;
 }
 
-int ArchivoClientes::contarClientes(){
+int ArchivoClientes::contarClientes(){ //cuenta los clientes
     ifstream archivo(nombreArchivo, ios::binary);
     if(!archivo){
         cout<<"No se pudo abrir el archivo.\n";
         return 0;
     }
     archivo.seekg(0, ios::end);
-    int size = archivo.tellg();
+    int size = archivo.tellg(); //tamaño
     archivo.close();
     return size / sizeof(Cliente);
 }
 
-void ArchivoClientes::modificarCliente(int id){
+void ArchivoClientes::modificarCliente(int id){ //modifica los clientes
     fstream archivo(nombreArchivo, ios::in | ios::out | ios::binary);
     if(!archivo){
         cout<<"No se puede abrir el archivo.\n";
@@ -153,9 +157,10 @@ void ArchivoClientes::modificarCliente(int id){
     }
     Cliente c;
     while(archivo.read(reinterpret_cast<char*>(&c), sizeof(Cliente))){
-        if(c.getId()==id){
+        if(c.getId()==id){ //busca el id
             cout<<"Cliente encontrado:\n";
-            c.mostrarCliente();
+            c.mostrarCliente(); //muestra datos anteriores
+            //pide nuevos datos
             char nombre[50];
             cout<<"Nuevo nombre: "; cin.ignore(numeric_limits<streamsize>::max(), '\n'); cin.getline(nombre,50); c.setNombre(nombre);
             char direccion[100];
@@ -173,17 +178,17 @@ void ArchivoClientes::modificarCliente(int id){
     archivo.close();
 }
 
-void ArchivoClientes::sumarPuntos(int idCliente, float totalCompra){
+void ArchivoClientes::sumarPuntos(int idCliente, float totalCompra){ //suma puntos si es frecuente
     fstream archivo(nombreArchivo, ios::in | ios::out | ios::binary);
     if(!archivo) return;
 
     Cliente c;
     while(archivo.read((char*)&c, sizeof(Cliente))){
-        if(c.getId() == idCliente){
+        if(c.getId() == idCliente){ //busca el id
             int puntosGanados = totalCompra / 10; // 1 punto por cada 10pesos
             c.agregarPuntos(puntosGanados);
 
-            archivo.seekp(-sizeof(Cliente), ios::cur);
+            archivo.seekp(-sizeof(Cliente), ios::cur); //encuentra la posicion
             archivo.write((char*)&c, sizeof(Cliente));
             break;
         }
